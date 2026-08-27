@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOperator() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "operator";
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      // Anyone can read reports (public civic feed)
+      allow read: if true;
+      
+      // Anyone can submit a report
+      allow create: if request.resource.data.category in [
+        'garbage_burning', 'illegal_dumping', 'smoke', 'sewage_leak', 
+        'construction_dust', 'blocked_drain', 'litter', 'other'
+      ] && request.resource.data.title is string;
+      
+      // Operators can update any field (status, assignment, notes)
+      // Residents can update supportCount (upvoting)
+      allow update: if isOperator() || 
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['supportCount', 'commentCount']));
+      
+      // Only operators can delete reports
+      allow delete: if isOperator();
+    }
+
+    // Comments subcollection / collection
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.resource.data.text is string && request.resource.data.text.size() <= 500;
+      allow update, delete: if isOperator();
+    }
+
+    // Hotspot Clusters
+    match /clusters/{clusterId} {
+      allow read: if true;
+      allow write: if isOperator();
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Audit logs
+    match /auditLogs/{logId} {
+      allow read: if isOperator();
+      allow write: if isOperator();
+    }
+  }
+}
