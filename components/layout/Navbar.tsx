@@ -34,28 +34,36 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <div style={{
-            width: "28px",
-            height: "28px",
+            width: "32px",
+            height: "32px",
+            borderRadius: "var(--radius-md)",
+            background: "var(--accent-bg)",
+            border: "1px solid var(--accent-border)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}>
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <circle cx="14" cy="14" r="13" stroke="#080808" strokeWidth="2"/>
-              <circle cx="14" cy="14" r="4" fill="#3D5A27"/>
-              <line x1="14" y1="2" x2="14" y2="8" stroke="#080808" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="14" y1="20" x2="14" y2="26" stroke="#080808" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="2" y1="14" x2="8" y2="14" stroke="#080808" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="20" y1="14" x2="26" y2="14" stroke="#080808" strokeWidth="1.5" strokeLinecap="round"/>
+            <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="12" stroke="var(--accent)" strokeWidth="2.5"/>
+              <circle cx="14" cy="14" r="4.5" fill="var(--accent)"/>
+              <line x1="14" y1="2" x2="14" y2="7" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="14" y1="21" x2="14" y2="26" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="2" y1="14" x2="7" y2="14" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="21" y1="14" x2="26" y2="14" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
-          <span style={{ fontSize: "16px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
-            StreetPulse
-          </span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: "16px", fontWeight: 800, letterSpacing: "-0.025em", color: "var(--text-primary)", lineHeight: 1.1 }}>
+              StreetPulse
+            </span>
+            <span className="mono" style={{ fontSize: "9px", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+              Civic Intelligence
+            </span>
+          </div>
         </Link>
 
         {/* Center links */}
-        <div style={{ display: "flex", gap: "4px" }}>
+        <div style={{ display: "flex", gap: "4px", background: "var(--bg-elevated)", padding: "4px", borderRadius: "var(--radius-full)", border: "1px solid var(--border-primary)" }}>
           {NAV_ITEMS.map(({ label, href }) => {
             const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
             return (
@@ -63,12 +71,13 @@ export default function Navbar() {
                 key={href}
                 href={href}
                 style={{
-                  padding: "8px 16px",
+                  padding: "6px 16px",
                   borderRadius: "var(--radius-full)",
-                  fontSize: "14px",
-                  fontWeight: isActive ? 600 : 400,
+                  fontSize: "13px",
+                  fontWeight: isActive ? 700 : 500,
                   color: isActive ? "var(--text-primary)" : "var(--text-muted)",
-                  background: isActive ? "var(--bg-elevated)" : "transparent",
+                  background: isActive ? "var(--bg-surface)" : "transparent",
+                  boxShadow: isActive ? "var(--shadow-xs)" : "none",
                   transition: "all 0.2s",
                   textDecoration: "none",
                 }}
@@ -81,9 +90,9 @@ export default function Navbar() {
 
         {/* Right CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div className="live-indicator">Live</div>
-          <Link href="/report" className="btn btn-primary btn-sm">
-            Report Issue
+          <div className="live-indicator">Pune LIVE</div>
+          <Link href="/report" className="btn btn-primary btn-sm" style={{ padding: "8px 18px", borderRadius: "var(--radius-full)" }}>
+            + Report Hazard
           </Link>
         </div>
       </div>

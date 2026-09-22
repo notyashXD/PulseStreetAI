@@ -24,22 +24,22 @@ const SAMPLE_DETECTIONS: Record<string, { category: IssueCategory; boxes: Boundi
   garbage: {
     category: "garbage_burning",
     boxes: [
-      { id: "1", label: "Open Fire Plume (Class A)", confidence: 0.94, color: "#D4645A", top: 18, left: 24, width: 45, height: 38 },
-      { id: "2", label: "Solid Waste Biomass", confidence: 0.89, color: "#D4A843", top: 48, left: 18, width: 62, height: 42 },
+      { id: "1", label: "Open Fire Plume (Class A)", confidence: 0.94, color: "#B65545", top: 18, left: 24, width: 45, height: 38 },
+      { id: "2", label: "Solid Waste Biomass", confidence: 0.89, color: "#B38038", top: 48, left: 18, width: 62, height: 42 },
     ],
     summary: "Active open waste combustion emitting high-density particulate smoke. High PM2.5 risk detected.",
   },
   dumping: {
     category: "illegal_dumping",
     boxes: [
-      { id: "1", label: "Unauthorized Mixed Refuse", confidence: 0.92, color: "#D4A843", top: 30, left: 20, width: 60, height: 50 },
+      { id: "1", label: "Unauthorized Mixed Refuse", confidence: 0.92, color: "#B38038", top: 30, left: 20, width: 60, height: 50 },
     ],
     summary: "Large unsegregated municipal solid waste accumulation blocking pedestrian right-of-way.",
   },
   sewage: {
     category: "sewage_leak",
     boxes: [
-      { id: "1", label: "Sewage / Effluent Overflow", confidence: 0.96, color: "#7B61A8", top: 40, left: 25, width: 55, height: 45 },
+      { id: "1", label: "Sewage / Effluent Overflow", confidence: 0.96, color: "#7E5B72", top: 40, left: 25, width: 55, height: 45 },
     ],
     summary: "Active untreated sewage breach with biological pathogen runoff on public road.",
   },

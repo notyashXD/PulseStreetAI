@@ -11,14 +11,14 @@ import {
 import CitizenLeaderboard from "@/components/impact/CitizenLeaderboard";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  garbage_burning: "#D4645A",
-  illegal_dumping: "#D4A843",
-  smoke: "#7B61A8",
-  sewage_leak: "#4B8FCC",
-  construction_dust: "#B07830",
-  blocked_drain: "#3A7AB8",
-  litter: "#3D5A27",
-  other: "#6B6B6B",
+  garbage_burning: "#B65545",
+  illegal_dumping: "#B38038",
+  smoke: "#7E5B72",
+  sewage_leak: "#4E6F87",
+  construction_dust: "#8C5E3C",
+  blocked_drain: "#3B6E8C",
+  litter: "#556E46",
+  other: "#8C7E72",
 };
 
 export default function ImpactPage() {
@@ -181,20 +181,20 @@ export default function ImpactPage() {
             <AreaChart data={weeklyTimelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorReported" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#080808" stopOpacity={0.12} />
-                  <stop offset="95%" stopColor="#080808" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#2A211B" stopOpacity={0.16} />
+                  <stop offset="95%" stopColor="#2A211B" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorResolved" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3D5A27" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#3D5A27" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#556E46" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#556E46" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-primary)" vertical={false} />
-              <XAxis dataKey="day" tick={{ fill: "#9B9B9B", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "#9B9B9B", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "#080808", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
-              <Area type="monotone" dataKey="reported" stroke="#080808" strokeWidth={2} fillOpacity={1} fill="url(#colorReported)" />
-              <Area type="monotone" dataKey="resolved" stroke="#3D5A27" strokeWidth={2} fillOpacity={1} fill="url(#colorResolved)" />
+              <XAxis dataKey="day" tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
+              <Area type="monotone" dataKey="reported" stroke="#2A211B" strokeWidth={2.5} fillOpacity={1} fill="url(#colorReported)" />
+              <Area type="monotone" dataKey="resolved" stroke="#556E46" strokeWidth={2.5} fillOpacity={1} fill="url(#colorResolved)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -202,7 +202,7 @@ export default function ImpactPage() {
         {/* Donut */}
         <div className="card animate-in" style={{ padding: "28px", display: "flex", flexDirection: "column" }}>
           <h2 style={{ fontSize: "16px", fontWeight: 700, marginBottom: "4px" }}>Category Distribution</h2>
-          <p style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: "16px" }}>Active environmental risks</p>
+          <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "16px" }}>Active environmental risks</p>
 
           <div style={{ flex: 1, minHeight: "180px" }}>
             <ResponsiveContainer width="100%" height={180}>
@@ -212,7 +212,7 @@ export default function ImpactPage() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "#080808", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
+                <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
               </PieChart>
             </ResponsiveContainer>
           </div>

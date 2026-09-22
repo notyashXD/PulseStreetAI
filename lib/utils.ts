@@ -29,36 +29,36 @@ export function formatDateTime(timestamp: number): string {
 export function severityColor(severity: string): string {
   return (
     {
-      low: "#3D5A27",
-      medium: "#D4A843",
-      high: "#D4645A",
-      critical: "#7B61A8",
-    }[severity] ?? "#6B6B6B"
+      low: "#556E46",
+      medium: "#B38038",
+      high: "#B65545",
+      critical: "#7E5B72",
+    }[severity] ?? "#8C7E72"
   );
 }
 
 export function severityBg(severity: string): string {
   return (
     {
-      low: "bg-green-500/15 text-green-400 border-green-500/30",
-      medium: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-      high: "bg-red-500/15 text-red-400 border-red-500/30",
-      critical: "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    }[severity] ?? "bg-gray-500/15 text-gray-400 border-gray-500/30"
+      low: "bg-[#556E46]/10 text-[#556E46] border-[#556E46]/20",
+      medium: "bg-[#B38038]/10 text-[#B38038] border-[#B38038]/20",
+      high: "bg-[#B65545]/10 text-[#B65545] border-[#B65545]/20",
+      critical: "bg-[#7E5B72]/10 text-[#7E5B72] border-[#7E5B72]/20",
+    }[severity] ?? "bg-[#8C7E72]/10 text-[#8C7E72] border-[#8C7E72]/20"
   );
 }
 
 export function statusBg(status: string): string {
   return (
     {
-      reported: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-      triaged: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-      verified: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-      assigned: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-      in_progress: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-      resolved: "bg-green-500/15 text-green-400 border-green-500/30",
-      rejected: "bg-gray-500/15 text-gray-400 border-gray-500/30",
-    }[status] ?? "bg-gray-500/15 text-gray-400 border-gray-500/30"
+      reported: "bg-[#4E6F87]/10 text-[#4E6F87] border-[#4E6F87]/20",
+      triaged: "bg-[#B38038]/10 text-[#B38038] border-[#B38038]/20",
+      verified: "bg-[#4E6F87]/10 text-[#4E6F87] border-[#4E6F87]/20",
+      assigned: "bg-[#8C5E3C]/10 text-[#8C5E3C] border-[#8C5E3C]/20",
+      in_progress: "bg-[#B38038]/10 text-[#B38038] border-[#B38038]/20",
+      resolved: "bg-[#556E46]/10 text-[#556E46] border-[#556E46]/20",
+      rejected: "bg-[#8C7E72]/10 text-[#8C7E72] border-[#8C7E72]/20",
+    }[status] ?? "bg-[#8C7E72]/10 text-[#8C7E72] border-[#8C7E72]/20"
   );
 }
 
@@ -78,12 +78,12 @@ export function categoryIcon(category: string): string {
 }
 
 export function aqiColor(aqi: number): string {
-  if (aqi <= 50) return "#22c55e";
-  if (aqi <= 100) return "#84cc16";
-  if (aqi <= 150) return "#f59e0b";
-  if (aqi <= 200) return "#ef4444";
-  if (aqi <= 300) return "#a855f7";
-  return "#991b1b";
+  if (aqi <= 50) return "#556E46";
+  if (aqi <= 100) return "#6B7F52";
+  if (aqi <= 150) return "#B38038";
+  if (aqi <= 200) return "#B65545";
+  if (aqi <= 300) return "#7E5B72";
+  return "#5E3A4E";
 }
 
 export function truncate(str: string, maxLen: number): string {

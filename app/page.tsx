@@ -118,12 +118,13 @@ export default function HomePage() {
             {/* Legend overlay */}
             <div style={{
               position: "absolute", bottom: "16px", left: "16px",
-              background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
+              background: "rgba(250, 247, 242, 0.94)", backdropFilter: "blur(12px)",
               borderRadius: "var(--radius-lg)", padding: "12px 16px",
               border: "1px solid var(--border-primary)", zIndex: 500,
               fontSize: "11px", color: "var(--text-muted)",
+              boxShadow: "var(--shadow-sm)",
             }}>
-              <div className="label-small" style={{ marginBottom: "8px" }}>Severity</div>
+              <div className="label-small" style={{ marginBottom: "8px", fontSize: "10px" }}>Severity Triage</div>
               {[
                 { label: "Critical", color: "var(--severity-critical)" },
                 { label: "High", color: "var(--severity-high)" },
@@ -132,18 +133,19 @@ export default function HomePage() {
               ].map(({ label, color }) => (
                 <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "3px" }}>
                   <span className="severity-dot" style={{ background: color }} />
-                  {label}
+                  <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>{label}</span>
                 </div>
               ))}
             </div>
             {/* Stats overlay */}
             <div style={{
               position: "absolute", bottom: "16px", right: "16px",
-              background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
+              background: "rgba(250, 247, 242, 0.94)", backdropFilter: "blur(12px)",
               borderRadius: "var(--radius-lg)", padding: "12px 16px",
               border: "1px solid var(--border-primary)", zIndex: 500,
+              boxShadow: "var(--shadow-sm)",
             }}>
-              <div className="mono" style={{ fontSize: "11px", color: "var(--text-dim)" }}>
+              <div className="mono" style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>
                 {reports.length} incidents · {clusters.length} clusters
               </div>
             </div>
