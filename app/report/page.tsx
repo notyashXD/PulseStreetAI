@@ -289,12 +289,26 @@ function Step3({ category, description, photoFile, lat, lng, landmark, ward, lan
     try {
       let imageBase64: string | null = null;
       if (photoFile) {
-        const buffer = await photoFile.arrayBuffer();
-        imageBase64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+        imageBase64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = reader.result as string;
+            const b64 = res.includes(",") ? res.split(",")[1] : res;
+            resolve(b64);
+          };
+          reader.onerror = () => resolve("");
+          reader.readAsDataURL(photoFile);
+        });
       }
-      const res = await fetch("/api/analyse", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageBase64, text: description, category }) });
+      const res = await fetch("/api/analyse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64, text: description, category }),
+      });
       if (res.ok) setAnalysis(await res.json());
-    } catch { } finally { setAnalysing(false); }
+    } catch (e) {
+      console.error("Step3 analysis failed:", e);
+    } finally { setAnalysing(false); }
   }, [category, description, photoFile]);
 
   useEffect(() => { runAnalysis(); }, [runAnalysis]);
@@ -314,25 +328,72 @@ function Step3({ category, description, photoFile, lat, lng, landmark, ward, lan
 
   if (submitted && reportId) {
     return (
-      <div className="animate-in" style={{ textAlign: "center", padding: "48px 0" }}>
+      <div className="animate-in" style={{ textAlign: "center", padding: "32px 16px" }}>
+        {/* Animated Badge Icon */}
         <div style={{
-          width: "64px", height: "64px", borderRadius: "50%",
+          width: "80px", height: "80px", borderRadius: "50%",
           background: "var(--accent-bg)", border: "2px solid var(--accent)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          margin: "0 auto 20px", fontSize: "28px", color: "var(--accent)",
-        }}>✓</div>
-        <h2 style={{ fontSize: "26px", fontWeight: 800, marginBottom: "8px" }}>Incident Registered & Dispatched</h2>
-        <p style={{ fontSize: "14px", color: "var(--text-muted)", maxWidth: "420px", margin: "0 auto 20px" }}>
-          Your report has received <strong>+25 Citizen Karma Credits</strong> and is queued for field verification.
+          margin: "0 auto 20px", fontSize: "36px", color: "var(--accent)",
+          boxShadow: "0 0 24px var(--accent-border)",
+          animation: "fade-in-up 0.5s ease-out",
+        }}>
+          🏆
+        </div>
+
+        <div style={{
+          display: "inline-block", padding: "4px 14px",
+          background: "var(--pastel-amber-bg)", border: "1px solid var(--pastel-amber-border)",
+          color: "var(--pastel-amber)", borderRadius: "var(--radius-full)",
+          fontSize: "12px", fontWeight: 800, marginBottom: "12px",
+          letterSpacing: "0.04em",
+        }}>
+          ⭐ +25 GREEN KARMA CREDITS EARNED
+        </div>
+
+        <h2 style={{ fontSize: "28px", fontWeight: 800, marginBottom: "8px", letterSpacing: "-0.025em" }}>
+          Incident Dispatched & Registered
+        </h2>
+        <p style={{ fontSize: "14px", color: "var(--text-secondary)", maxWidth: "460px", margin: "0 auto 24px", lineHeight: 1.5 }}>
+          Your multimodal evidence has been verified by Gemini AI and queued for municipal field crew remediation.
         </p>
+
+        {/* Unlocked Badge Card */}
+        <div style={{
+          maxWidth: "400px", margin: "0 auto 28px",
+          background: "var(--bg-elevated)", border: "1px solid var(--border-primary)",
+          borderRadius: "var(--radius-2xl)", padding: "18px 24px",
+          display: "flex", alignItems: "center", gap: "14px", textAlign: "left",
+        }}>
+          <span style={{ fontSize: "32px" }}>🌱</span>
+          <div>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)" }}>
+              Badge Unlocked: Clean Air Guardian
+            </div>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+              Ranked in Top 10% citizen environmental reporters in Pune
+            </div>
+          </div>
+        </div>
+
         <div className="mono" style={{
-          display: "inline-block", padding: "8px 20px", background: "var(--bg-elevated)",
+          display: "inline-block", padding: "8px 20px", background: "var(--bg-card)",
           borderRadius: "var(--radius-full)", fontSize: "13px", color: "var(--accent)",
-          marginBottom: "32px", border: "1px solid var(--border-primary)", fontWeight: 700,
-        }}>{reportId}</div>
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-          <button type="button" className="btn btn-secondary" onClick={() => router.push("/")}>Return to Overview</button>
-          <button type="button" className="btn btn-primary" onClick={() => router.push("/command")}>View in Command Centre</button>
+          marginBottom: "32px", border: "1px solid var(--accent-border)", fontWeight: 700,
+        }}>
+          Incident Reference: {reportId}
+        </div>
+
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+          <button type="button" className="btn btn-secondary" onClick={() => router.push("/")}>
+            ← Return to Overview
+          </button>
+          <button type="button" className="btn btn-primary" onClick={() => router.push("/command")}>
+            Open Municipal Command Queue →
+          </button>
+          <button type="button" className="btn btn-accent" onClick={() => router.push("/impact")}>
+            View Karma Wallet & Store →
+          </button>
         </div>
       </div>
     );

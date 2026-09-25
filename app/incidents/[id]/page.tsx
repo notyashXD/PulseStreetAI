@@ -122,6 +122,8 @@ export default function IncidentDetailPage() {
       {/* Interactive Resolution Comparison Slider */}
       <div style={{ marginBottom: "24px" }}>
         <ResolutionSlider
+          beforeUrl={report.photoUrls?.[0]}
+          afterUrl={report.afterPhotoUrls?.[0]}
           category={report.category}
           isResolved={isResolved}
         />

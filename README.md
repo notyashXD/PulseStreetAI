@@ -1,120 +1,110 @@
-# 🏙️ StreetPulse — Civic Environment Intelligence Platform
+# PulseStreetAI — Civic Environmental Intelligence Platform
 
-> **CleanAir & Clear Streets Hackathon Track Submission**  
-> Real-time environmental hazard reporting, multimodal AI triage, and municipal command system.
-
----
-
-## 🌟 Product Mission & Overview
-
-**StreetPulse** transforms civic environmental hazard management. It empowers residents to report local hazards—garbage burning, illegal dumping, industrial smoke plumes, sewage leaks, construction dust, blocked storm drains, and litter—while providing municipal civic teams and field officers with an AI-augmented Command Centre to triage, corroborate, and resolve issues before they escalate into public health crises.
-
-### Core Value Pillars
-1. **Multimodal Citizen Reporting**: Fast 3-step reporting supporting photos, text, geolocation pin adjustments, and multi-lingual UI (English & Hindi).
-2. **Gemini 2.0 Flash Intelligence**: Automated hazard classification, severity appraisal, health risk evaluation, and departmental routing.
-3. **Evidence Fusion Scoring (0–100)**: Deterministic multi-factor triage combining AI confidence, spatio-temporal clustering (500m / 48h), live Open-Meteo AQI anomalies, recency decay, and community upvotes.
-4. **Live Sensor & Open-Meteo Integration**: Real-time AQI, PM2.5, PM10, NO₂, temperature, humidity, and 24-hour pollutant trend forecasting.
-5. **Civic Command Centre**: Map-first operator workbench with triage queues, cluster detection, assignment workflows, and resolution verification.
-6. **Impact & Trend Analytics**: Ward-level leaderboard, clearance rates, and CSV export for policy makers and municipal authorities.
+PulseStreetAI is a real-time civic environmental hazard reporting and municipal triage platform. It enables residents to capture and report environmental hazards—such as garbage burning, illegal waste dumping, industrial smoke emissions, sewage overflows, construction dust, and clogged storm drains—while providing municipal operators with a map-based Command Centre to triage, assign field crews, and optically verify remediations.
 
 ---
 
-## 🏗️ Technical Architecture
+## Key Features
+
+- **Multimodal Citizen Reporting**: 3-step reporting supporting camera upload with real-time computer vision classification, voice recording notes, and interactive map pin placement.
+- **Computer Vision Hazard Analysis**: Powered by Gemini 2.5 Flash with real-time object detection, spatial bounding boxes, and automatic non-hazard filtering (diagrams, documents, screens).
+- **Evidence Fusion Scoring (0–100)**: Multi-factor triage algorithm synthesizing visual confidence, spatio-temporal clustering (500m / 48h), live Open-Meteo atmospheric anomalies, recency decay, and citizen endorsements.
+- **Atmospheric Telemetry**: Real-time AQI, PM2.5, PM10, NO₂, temperature, humidity, and 24-hour pollutant trend forecasting.
+- **Municipal Command Centre**: Operator triage queue with SLA countdowns, priority filtering, squad dispatching, and trilingual citizen emergency broadcast alerts.
+- **Optical Resolution Audit**: Side-by-side interactive before-and-after image comparison slider with visual remediation verification.
+- **Impact & Analytics**: Ward-level performance leaderboard, resolution clearance rates, and CSV data export.
+- **Role-Based Access Control**: Instant persona switching between Municipal Admin and Citizen Monitor with role-gated operator controls.
+
+---
+
+## Technical Stack
+
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS with customized design system (Warm Alabaster & Earthy Pastels)
+- **AI Vision & Copilot**: Google Gemini 2.5 Flash / 1.5 Flash API with key rotation
+- **Mapping**: Leaflet & React-Leaflet
+- **Data & Telemetry**: Open-Meteo Air Quality & Weather APIs
+
+---
+
+## Project Structure
 
 ```
-streetpulse/
 ├── app/
-│   ├── layout.tsx                # Global layout with DemoBanner & Navigation
-│   ├── page.tsx                  # Public Home / City Pulse
-│   ├── report/page.tsx           # 3-step Multimodal Incident Submission Flow
-│   ├── incidents/[id]/page.tsx   # Detailed Incident View with AI Breakdown
-│   ├── command/page.tsx          # Civic Operator Command Centre
-│   ├── impact/page.tsx           # Impact & Trends Analytics Dashboard
+│   ├── command/page.tsx          # Municipal Command & Citizen Triage Centre
+│   ├── impact/page.tsx           # Environmental Impact & Ward Leaderboards
+│   ├── incidents/[id]/page.tsx   # Detailed Case Record & Resolution Slider
+│   ├── login/page.tsx            # Role-Based Login & Persona Switcher
+│   ├── report/page.tsx           # Multimodal Hazard Reporting Workflow
 │   ├── api/
-│   │   ├── analyse/route.ts      # Server-side Gemini 2.0 Flash Analysis API
-│   │   ├── verify-resolution/    # Before/After Resolution Verification API
-│   │   ├── aqi/route.ts          # Open-Meteo AQI Proxy
-│   │   └── weather/route.ts      # Open-Meteo Weather Proxy
+│   │   ├── analyse/              # Hazard Triage Assessment API
+│   │   ├── aqi/                  # Open-Meteo Air Quality Proxy
+│   │   ├── copilot/              # Pulse AI Conversational Copilot API
+│   │   ├── verify-resolution/    # Before/After Visual Audit API
+│   │   ├── vision-scan/          # Real-time Gemini Vision Object Scanner
+│   │   └── weather/              # Meteorological Telemetry API
 ├── components/
-│   ├── aqi/                      # AQICard, AQITrend Chart
-│   ├── incidents/                # IncidentCard
-│   ├── layout/                   # Header, DemoBanner
-│   └── map/                      # LeafletMap, LocationPickerMap
+│   ├── aqi/                      # AQI Metric Cards & 24h Trend Chart
+│   ├── command/                  # Dispatch Ticker & Broadcast Modal
+│   ├── copilot/                  # Floating Pulse AI Assistant
+│   ├── impact/                   # Ward Index & Citizen Leaderboard
+│   ├── incidents/                # Incident Feed Cards & Resolution Slider
+│   ├── layout/                   # Navigation Bar & Global Headers
+│   ├── map/                      # Leaflet Interactive Maps
+│   └── report/                   # Vision Scanner & Voice Recorder
 ├── lib/
-│   ├── demo/seed.ts              # 25 Realistic Demo Incidents for Pune, India
-│   ├── firebase/                 # Firebase Client & Firestore CRUD
-│   ├── services/
-│   │   ├── clustering.ts         # Haversine Spatio-Temporal Clustering
-│   │   ├── gemini.ts             # Gemini 2.0 Flash Multimodal Client
-│   │   ├── openmeteo.ts          # Open-Meteo AQI & Weather Adapter
-│   │   └── scoring.ts            # Evidence Fusion Scoring Engine
-│   ├── types/                    # Zod Schemas & TypeScript Types
-│   └── utils.ts                  # Color palettes, formatters, icons
-└── firestore.rules               # Production-ready Security Rules
+│   ├── auth/                     # Role-Based Authentication Context
+│   ├── demo/                     # City-wide Spatial Incident Dataset
+│   ├── services/                 # Gemini, Open-Meteo, Clustering & Scoring
+│   ├── types/                    # Zod Schemas & TypeScript Definitions
+│   └── utils.ts                  # Color palettes, geometry, formatters
 ```
 
 ---
 
-## ⚡ Getting Started
+## Getting Started
 
 ### 1. Prerequisites
-- **Node.js**: v18.18+ or v20+
-- **npm** or **pnpm** / **yarn**
+- Node.js 18.18+ or 20+
+- npm or pnpm
 
-### 2. Installation
+### 2. Setup
 ```bash
-# Clone and navigate into the project directory
-cd streetpulse
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/PulseStreetAI.git
+cd PulseStreetAI
 
 # Install dependencies
 npm install
 ```
 
-### 3. Environment Variables
-Copy `.env.example` to `.env.local`:
-```bash
-cp .env.example .env.local
-```
-Add your **Gemini API Key**:
+### 3. Environment Configuration
+Create a `.env.local` file in the root directory:
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
-*(Optional: Provide Firebase keys if connecting to your live Firebase project. StreetPulse automatically operates in Demo Mode if keys are omitted).*
 
-### 4. Running Locally
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to explore the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🧪 Testing & Verification
+## Role-Based Credentials (Demo)
 
-Run the TypeScript type checker and linter:
+| Role | Username | Password | Default View | Access Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Municipal Admin** | `admin` | `admin` | `/command` | Full Operator Privileges (Dispatch, SLA Triage, Optical Audit, Broadcasts) |
+| **Citizen Monitor** | `user` | `user` | `/` | Resident Privileges (Hazard Reporting, AQI Telemetry, Community Feed) |
+
+---
+
+## Production Build
+
 ```bash
-# Type check
-npx tsc --noEmit
-
-# Lint
-npm run lint
-
-# Production Build Test
 npm run build
+npm run start
 ```
-
----
-
-## 🛡️ Security & Privacy
-- **Location Obfuscation**: Public feeds use approximate locations (~500m jitter) to protect citizen privacy.
-- **EXIF Stripping**: Image uploads strip geolocation metadata before storage.
-- **Strict Firestore Rules**: Role-based access control separating public report read/writes from operator-only assignment and audit logging.
-
----
-
-## 🌐 Deploy to Vercel
-
-```bash
-npx vercel
-```
-Set `GEMINI_API_KEY` in your Vercel Project Settings for live AI multimodal classification in production.

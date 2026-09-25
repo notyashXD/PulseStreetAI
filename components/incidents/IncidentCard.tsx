@@ -16,13 +16,33 @@ export default function IncidentCard({ report, compact }: IncidentCardProps) {
         cursor: "pointer",
         borderLeft: `3px solid ${color}`,
       }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: compact ? "8px" : "14px" }}>
-          <span style={{ fontSize: compact ? "16px" : "20px", lineHeight: 1, flexShrink: 0, marginTop: "2px" }}>
-            {categoryIcon(report.category)}
-          </span>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: compact ? "8px" : "14px" }}>
+          {report.photoUrls && report.photoUrls.length > 0 ? (
+            <div style={{
+              width: compact ? "40px" : "50px",
+              height: compact ? "40px" : "50px",
+              borderRadius: "var(--radius-md)",
+              overflow: "hidden",
+              flexShrink: 0,
+              border: "1px solid var(--border-primary)",
+              background: "var(--bg-elevated)",
+              boxShadow: "var(--shadow-xs)",
+            }}>
+              <img
+                src={report.photoUrls[0]}
+                alt={report.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                onError={(e) => { (e.target as HTMLElement).style.display = "none"; }}
+              />
+            </div>
+          ) : (
+            <span style={{ fontSize: compact ? "16px" : "20px", lineHeight: 1, flexShrink: 0, marginTop: "2px" }}>
+              {categoryIcon(report.category)}
+            </span>
+          )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={{
-              fontSize: compact ? "13px" : "15px", fontWeight: 600,
+              fontSize: compact ? "13px" : "15px", fontWeight: 700,
               color: "var(--text-primary)", marginBottom: "3px", lineHeight: 1.3,
             }}>
               {truncate(report.title, compact ? 60 : 80)}

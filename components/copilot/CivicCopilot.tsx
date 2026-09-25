@@ -19,7 +19,7 @@ export default function CivicCopilot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: `### 🤖 StreetPulse AI Civic Copilot\n\nI am your municipal intelligence co-pilot. I analyze live environmental sensors, citizen reports, and crew dispatch routes across Pune.\n\nAsk me anything or pick a quick action below:`,
+      content: `### 🤖 Pulse — Civic Intelligence Assistant\n\nI am Pulse, your civic intelligence assistant for StreetPulse. I monitor live environmental sensors, citizen reports, and municipal triage across Pune.\n\nAsk me anything or pick a quick action below:`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -122,7 +122,7 @@ export default function CivicCopilot() {
         >
           ✨
         </div>
-        <span>AI Civic Copilot</span>
+        <span>Pulse</span>
         <span
           style={{
             background: "var(--accent-bg)",
@@ -190,8 +190,8 @@ export default function CivicCopilot() {
                 🤖
               </div>
               <div>
-                <div style={{ fontSize: "14px", fontWeight: 700 }}>Civic Copilot</div>
-                <div className="label-small" style={{ fontSize: "9px" }}>Powered by Gemini 2.0</div>
+                <div style={{ fontSize: "14px", fontWeight: 700 }}>Pulse AI</div>
+                <div className="label-small" style={{ fontSize: "9px" }}>Civic Intelligence · Powered by Gemini</div>
               </div>
             </div>
             <button
@@ -359,7 +359,7 @@ export default function CivicCopilot() {
                 padding: "8px 16px",
                 background: "var(--bg-surface)",
               }}
-              placeholder="Ask Copilot (e.g. 'Draft Hadapsar briefing')..."
+              placeholder="Ask Pulse (e.g. 'Draft Hadapsar briefing')..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}

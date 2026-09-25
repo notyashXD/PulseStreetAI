@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, Circle, Polygon } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, Circle, Polygon, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Report, HotspotCluster } from "@/lib/types";
 import { severityColor, categoryIcon, formatRelativeTime, truncate } from "@/lib/utils";
 import Link from "next/link";
+
+function MapRecenter({ center, zoom }: { center: [number, number]; zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo(center, zoom, { duration: 1.2 });
+  }, [center, zoom, map]);
+  return null;
+}
 
 interface Props {
   reports?: Report[];
@@ -50,10 +58,10 @@ const PUNE_WARDS = [
     aqi: 215,
     color: "#7B61A8",
     coords: [
-      [18.515, 73.895],
+      [18.485, 73.895],
+      [18.525, 73.895],
       [18.525, 73.945],
       [18.485, 73.945],
-      [18.485, 73.895],
     ] as [number, number][],
   },
   {
@@ -65,6 +73,39 @@ const PUNE_WARDS = [
       [18.515, 73.825],
       [18.485, 73.825],
       [18.485, 73.785],
+    ] as [number, number][],
+  },
+  {
+    name: "Viman Nagar & Kharadi Hub",
+    aqi: 164,
+    color: "#B38038",
+    coords: [
+      [18.550, 73.895],
+      [18.580, 73.895],
+      [18.580, 73.955],
+      [18.540, 73.955],
+    ] as [number, number][],
+  },
+  {
+    name: "Hinjewadi & Pimpri MIDC",
+    aqi: 220,
+    color: "#B65545",
+    coords: [
+      [18.570, 73.715],
+      [18.615, 73.715],
+      [18.615, 73.775],
+      [18.570, 73.775],
+    ] as [number, number][],
+  },
+  {
+    name: "Swargate & Katraj Corridor",
+    aqi: 148,
+    color: "#D4A843",
+    coords: [
+      [18.455, 73.845],
+      [18.505, 73.845],
+      [18.505, 73.875],
+      [18.455, 73.875],
     ] as [number, number][],
   },
 ];
@@ -154,6 +195,7 @@ export default function LeafletMapInner({
           attribution="© OpenStreetMap"
           opacity={0.88}
         />
+        <MapRecenter center={center} zoom={zoom} />
 
         {/* Layer 1: Ward Air Quality Chloropleth Polygons */}
         {activeLayers.wards &&

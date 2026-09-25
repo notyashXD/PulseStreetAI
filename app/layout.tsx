@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import CivicCopilot from "@/components/copilot/CivicCopilot";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,11 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
-        <Navbar />
-        <main style={{ position: "relative", zIndex: 1 }}>
-          {children}
-        </main>
-        <CivicCopilot />
+        <AuthProvider>
+          <Navbar />
+          <main style={{ position: "relative", zIndex: 1 }}>
+            {children}
+          </main>
+          <CivicCopilot />
+        </AuthProvider>
       </body>
     </html>
   );

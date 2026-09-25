@@ -7,6 +7,8 @@ import {
 import { AQITrendPoint } from "@/lib/types";
 import { aqiColor } from "@/lib/utils";
 
+import { useState, useEffect } from "react";
+
 interface AQITrendProps { data: AQITrendPoint[]; loading?: boolean; }
 
 function CustomTooltip({ active, payload, label }: any) {
@@ -27,7 +29,10 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function AQITrend({ data, loading }: AQITrendProps) {
-  if (loading) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (loading || !mounted) {
     return (
       <div className="card" style={{ padding: "28px" }}>
         <div className="shimmer" style={{ height: "200px", borderRadius: "var(--radius-md)" }} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { getDemoReports } from "@/lib/demo/seed";
 import { CATEGORY_LABELS } from "@/lib/types";
@@ -22,6 +22,9 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function ImpactPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const reports = useMemo(() => getDemoReports(), []);
   const [selectedTimeframe, setSelectedTimeframe] = useState<"7d" | "30d" | "all">("30d");
 
@@ -177,26 +180,30 @@ export default function ImpactPage() {
             </div>
           </div>
 
-          <ResponsiveContainer width="100%" height={260}>
-            <AreaChart data={weeklyTimelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorReported" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2A211B" stopOpacity={0.16} />
-                  <stop offset="95%" stopColor="#2A211B" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorResolved" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#556E46" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#556E46" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-primary)" vertical={false} />
-              <XAxis dataKey="day" tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
-              <Area type="monotone" dataKey="reported" stroke="#2A211B" strokeWidth={2.5} fillOpacity={1} fill="url(#colorReported)" />
-              <Area type="monotone" dataKey="resolved" stroke="#556E46" strokeWidth={2.5} fillOpacity={1} fill="url(#colorResolved)" />
-            </AreaChart>
-          </ResponsiveContainer>
+          {mounted ? (
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={weeklyTimelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorReported" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2A211B" stopOpacity={0.16} />
+                    <stop offset="95%" stopColor="#2A211B" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorResolved" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#556E46" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#556E46" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-primary)" vertical={false} />
+                <XAxis dataKey="day" tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#8C7E72", fontSize: 10, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
+                <Area type="monotone" dataKey="reported" stroke="#2A211B" strokeWidth={2.5} fillOpacity={1} fill="url(#colorReported)" />
+                <Area type="monotone" dataKey="resolved" stroke="#556E46" strokeWidth={2.5} fillOpacity={1} fill="url(#colorResolved)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="shimmer" style={{ height: "260px", borderRadius: "var(--radius-md)" }} />
+          )}
         </div>
 
         {/* Donut */}
@@ -205,16 +212,20 @@ export default function ImpactPage() {
           <p style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "16px" }}>Active environmental risks</p>
 
           <div style={{ flex: 1, minHeight: "180px" }}>
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie data={categoryData} dataKey="count" nameKey="name" innerRadius={48} outerRadius={72} paddingAngle={3} strokeWidth={0}>
-                  {categoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
-              </PieChart>
-            </ResponsiveContainer>
+            {mounted ? (
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie data={categoryData} dataKey="count" nameKey="name" innerRadius={48} outerRadius={72} paddingAngle={3} strokeWidth={0}>
+                    {categoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ background: "rgba(250, 247, 242, 0.96)", backdropFilter: "blur(12px)", border: "1px solid var(--border-primary)", borderRadius: "12px", color: "var(--text-primary)", fontSize: "12px", boxShadow: "var(--shadow-md)" }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="shimmer" style={{ height: "180px", borderRadius: "var(--radius-md)" }} />
+            )}
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px", fontSize: "11px", marginTop: "12px" }}>
