@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# pitch & showcase drafts
+*.docx
+VIDEO_PITCH_SCRIPT.md
