@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, Circle, Polygon, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Report, HotspotCluster } from "@/lib/types";
@@ -9,9 +9,23 @@ import Link from "next/link";
 
 function MapRecenter({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
+  const prevRef = useRef<{ lat: number; lng: number; zoom: number }>({
+    lat: center[0],
+    lng: center[1],
+    zoom,
+  });
+
   useEffect(() => {
-    map.flyTo(center, zoom, { duration: 1.2 });
+    const dLat = Math.abs(prevRef.current.lat - center[0]);
+    const dLng = Math.abs(prevRef.current.lng - center[1]);
+    const dZoom = Math.abs(prevRef.current.zoom - zoom);
+
+    if (dLat > 0.0005 || dLng > 0.0005 || dZoom > 0.1) {
+      prevRef.current = { lat: center[0], lng: center[1], zoom };
+      map.flyTo(center, zoom, { duration: 0.8 });
+    }
   }, [center, zoom, map]);
+
   return null;
 }
 
@@ -166,17 +180,22 @@ export default function LeafletMapInner({
     );
   }
 
-  // Filter reports based on time scrubber
-  const displayedReports = reports.filter((r) => {
-    if (timeFilter === "24h") return Date.now() - r.createdAt <= 86_400_000;
-    if (timeFilter === "48h") return Date.now() - r.createdAt <= 172_800_000;
-    return true;
-  });
+  // Filter reports based on time scrubber (memoized)
+  const displayedReports = useMemo(() => {
+    const now = Date.now();
+    return reports.filter((r) => {
+      if (timeFilter === "24h") return now - r.createdAt <= 86_400_000;
+      if (timeFilter === "48h") return now - r.createdAt <= 172_800_000;
+      return true;
+    });
+  }, [reports, timeFilter]);
 
-  // Critical burning/smoke reports generate dispersion plumes
-  const plumeSources = displayedReports.filter(
-    (r) => (r.category === "garbage_burning" || r.category === "smoke") && (r.severity === "high" || r.severity === "critical")
-  );
+  // Critical burning/smoke reports generate dispersion plumes (memoized)
+  const plumeSources = useMemo(() => {
+    return displayedReports.filter(
+      (r) => (r.category === "garbage_burning" || r.category === "smoke") && (r.severity === "high" || r.severity === "critical")
+    );
+  }, [displayedReports]);
 
   return (
     <div style={{ position: "relative", width: "100%", height }}>

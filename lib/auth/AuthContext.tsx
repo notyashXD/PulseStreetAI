@@ -57,22 +57,32 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const STORAGE_KEY = "streetpulse_auth_session";
+const STORAGE_KEY = "streetpulse_auth_session_v4";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<AuthUser>(PRESET_USERS.admin.user);
 
   useEffect(() => {
     try {
+      // Clear legacy storage keys
+      localStorage.removeItem("streetpulse_auth_session");
+      localStorage.removeItem("streetpulse_auth_session_v2");
+      localStorage.removeItem("streetpulse_auth_session_v3");
+
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed?.role && (parsed.role === "admin" || parsed.role === "user")) {
-          setCurrentUser(parsed);
-        }
+        const role = (parsed?.role === "user" ? "user" : "admin") as UserRole;
+        // Always take fresh profile data from PRESET_USERS for this role
+        const fresh = PRESET_USERS[role]?.user || PRESET_USERS.admin.user;
+        setCurrentUser(fresh);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+      } else {
+        setCurrentUser(PRESET_USERS.admin.user);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(PRESET_USERS.admin.user));
       }
     } catch {
-      // ignore
+      setCurrentUser(PRESET_USERS.admin.user);
     }
   }, []);
 

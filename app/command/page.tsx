@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Report, IssueCategory, Severity, ReportStatus } from "@/lib/types";
 import { CATEGORY_LABELS, STATUS_LABELS, DEPARTMENT_LABELS } from "@/lib/types";
@@ -11,6 +11,7 @@ import { categoryIcon, formatRelativeTime, severityColor, truncate } from "@/lib
 import dynamic from "next/dynamic";
 import DispatchTicker from "@/components/command/DispatchTicker";
 import BroadcastModal from "@/components/command/BroadcastModal";
+import SlaCountdownBadge from "@/components/command/SlaCountdownBadge";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 const LeafletMap = dynamic(() => import("@/components/map/LeafletMap"), { ssr: false });
@@ -21,6 +22,8 @@ type FilterState = {
   status: ReportStatus | "all";
   department: string;
 };
+
+const DEFAULT_COMMAND_CENTER: [number, number] = [18.52, 73.856];
 
 const DISPATCH_CREWS = [
   { id: "crew-1", name: "PMC Rapid Waste & Burn Response Unit #2", eta: "12 mins", status: "Available", vehicle: "Heavy Mist Sprayer + Tipper" },
@@ -44,13 +47,6 @@ export default function CommandPage() {
   const [dispatchModalReport, setDispatchModalReport] = useState<Report | null>(null);
   const [selectedCrew, setSelectedCrew] = useState<string>(DISPATCH_CREWS[0].id);
 
-  // Dynamic SLA countdown ticker
-  const [currentTime, setCurrentTime] = useState(Date.now());
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const filtered = useMemo(() => {
     let r = reportsList;
     if (filters.category !== "all") r = r.filter((x) => x.category === filters.category);
@@ -61,9 +57,17 @@ export default function CommandPage() {
   }, [reportsList, filters]);
 
   const clusters = useMemo(() => clusterReports(reportsList), [reportsList]);
-  const openCount = reportsList.filter((r) => !["resolved", "rejected"].includes(r.status)).length;
-  const criticalCount = reportsList.filter((r) => r.severity === "critical").length;
-  const resolvedToday = reportsList.filter((r) => r.status === "resolved" && Date.now() - r.updatedAt < 86_400_000).length;
+
+  const mapCenter = useMemo<[number, number]>(() => {
+    if (selectedReport) {
+      return [selectedReport.location.lat, selectedReport.location.lng];
+    }
+    return DEFAULT_COMMAND_CENTER;
+  }, [selectedReport]);
+
+  const openCount = useMemo(() => reportsList.filter((r) => !["resolved", "rejected"].includes(r.status)).length, [reportsList]);
+  const criticalCount = useMemo(() => reportsList.filter((r) => r.severity === "critical").length, [reportsList]);
+  const resolvedToday = useMemo(() => reportsList.filter((r) => r.status === "resolved" && Date.now() - r.updatedAt < 86_400_000).length, [reportsList]);
 
   const handleConfirmDispatch = (crewName: string) => {
     if (!dispatchModalReport) return;
@@ -88,33 +92,15 @@ export default function CommandPage() {
           : r
       )
     );
-    setToastMessage(`Incident ${reportId} dispatched to ${crewName}`);
+    setToastMessage(`Incident #${reportId} dispatched to ${crewName}`);
     setDispatchModalReport(null);
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  const kpis = [
-    { label: "Active Queue", value: openCount, badge: "Live" },
-    { label: "Critical Flags", value: criticalCount, color: "var(--coral)" },
-    { label: "Resolved (24h)", value: resolvedToday, color: "var(--accent)" },
-    { label: "Hotspot Clusters", value: clusters.length, color: "var(--amber)" },
-  ];
-
-  const calculateSLA = (report: Report) => {
-    const slaLimitMs = report.severity === "critical" ? 4 * 3600 * 1000 : 12 * 3600 * 1000;
-    const elapsed = currentTime - report.createdAt;
-    const remaining = Math.max(0, slaLimitMs - elapsed);
-    const hrs = Math.floor(remaining / 3600000);
-    const mins = Math.floor((remaining % 3600000) / 60000);
-    const secs = Math.floor((remaining % 60000) / 1000);
-    return {
-      expired: remaining === 0,
-      formatted: `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`,
-    };
-  };
+  const hasActiveFilters = filters.category !== "all" || filters.severity !== "all" || filters.status !== "all" || filters.department !== "all";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - var(--nav-height))", background: "var(--bg-canvas)" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - var(--nav-height))", background: "var(--bg-canvas)", overflow: "hidden" }}>
       {/* Live Dispatch Ticker */}
       <DispatchTicker />
 
@@ -134,8 +120,8 @@ export default function CommandPage() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(42, 33, 27, 0.6)",
-            backdropFilter: "blur(6px)",
+            background: "rgba(42, 33, 27, 0.65)",
+            backdropFilter: "blur(8px)",
             zIndex: 1100,
             display: "flex",
             alignItems: "center",
@@ -151,7 +137,8 @@ export default function CommandPage() {
               width: "100%",
               padding: "28px",
               boxShadow: "var(--shadow-xl)",
-              background: "var(--bg-card)",
+              background: "#FFFFFF",
+              borderRadius: "var(--radius-2xl)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -167,7 +154,7 @@ export default function CommandPage() {
               <button
                 className="btn btn-ghost btn-sm"
                 onClick={() => setDispatchModalReport(null)}
-                style={{ fontSize: "16px" }}
+                style={{ fontSize: "16px", borderRadius: "50%", width: "32px", height: "32px", padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
               >
                 ✕
               </button>
@@ -177,7 +164,7 @@ export default function CommandPage() {
               style={{
                 background: "var(--bg-elevated)",
                 padding: "12px 16px",
-                borderRadius: "var(--radius-md)",
+                borderRadius: "var(--radius-lg)",
                 border: "1px solid var(--border-primary)",
                 marginBottom: "20px",
               }}
@@ -202,7 +189,7 @@ export default function CommandPage() {
                       padding: "12px 16px",
                       borderRadius: "var(--radius-lg)",
                       border: `1.5px solid ${isPicked ? "var(--accent)" : "var(--border-primary)"}`,
-                      background: isPicked ? "var(--accent-bg)" : "var(--bg-elevated)",
+                      background: isPicked ? "var(--accent-bg)" : "#FFFFFF",
                       cursor: "pointer",
                       transition: "all 0.2s",
                       display: "flex",
@@ -223,11 +210,11 @@ export default function CommandPage() {
                         style={{
                           fontSize: "11px",
                           fontWeight: 700,
-                          padding: "3px 8px",
+                          padding: "3px 10px",
                           borderRadius: "var(--radius-full)",
-                          background: "var(--bg-card)",
-                          border: "1px solid var(--border-primary)",
-                          color: "var(--accent)",
+                          background: isPicked ? "var(--accent)" : "var(--bg-elevated)",
+                          border: `1px solid ${isPicked ? "var(--accent)" : "var(--border-primary)"}`,
+                          color: isPicked ? "#FFFFFF" : "var(--text-secondary)",
                         }}
                       >
                         ETA {crew.eta}
@@ -263,26 +250,26 @@ export default function CommandPage() {
         </div>
       )}
 
-      {/* Toast */}
+      {/* Floating Toast Notification */}
       {toastMessage && (
         <div
           style={{
             position: "fixed",
-            bottom: "24px",
-            right: "24px",
-            background: "var(--bg-card)",
+            bottom: "28px",
+            right: "28px",
+            background: "#FFFFFF",
             border: "1px solid var(--accent-border)",
             color: "var(--accent)",
-            padding: "12px 20px",
-            borderRadius: "var(--radius-lg)",
+            padding: "12px 22px",
+            borderRadius: "var(--radius-xl)",
             fontWeight: 700,
             fontSize: "13px",
-            boxShadow: "var(--shadow-lg)",
+            boxShadow: "var(--shadow-xl)",
             zIndex: 1200,
             animation: "slide-up 0.3s ease-out",
             display: "flex",
             alignItems: "center",
-            gap: "8px",
+            gap: "10px",
           }}
         >
           <span className="live-pulse-dot" style={{ background: "var(--accent)" }} />
@@ -290,58 +277,136 @@ export default function CommandPage() {
         </div>
       )}
 
-      {/* Command Header */}
+      {/* Streamlined Command Deck Header */}
       <div
-        className="glass-strong"
         style={{
-          padding: "16px 28px",
+          padding: "14px 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "16px",
+          gap: "20px",
           flexWrap: "wrap",
+          background: "#FFFFFF",
           borderBottom: "1px solid var(--border-primary)",
         }}
       >
-        <div>
-          <div className="label-small" style={{ marginBottom: "4px", color: "var(--accent)" }}>
-            Municipal Operations Center
-          </div>
-          <h1 style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-0.025em" }}>
-            Command & Citizen Triage Center
-          </h1>
-        </div>
-
-        {/* Center KPI readouts */}
-        <div style={{ display: "flex", gap: "28px" }}>
-          {kpis.map(({ label, value, color: c }) => (
-            <div key={label} style={{ textAlign: "center" }}>
-              <div
-                className="mono"
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
+              <span className="label-small" style={{ color: "var(--accent)", fontSize: "10px", letterSpacing: "0.06em" }}>
+                MUNICIPAL OPERATIONS CENTER
+              </span>
+              <span
                 style={{
-                  fontSize: "22px",
-                  fontWeight: 800,
-                  lineHeight: 1,
-                  color: c || "var(--text-primary)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  color: "var(--accent)",
+                  background: "var(--accent-bg)",
+                  border: "1px solid var(--accent-border)",
+                  padding: "1px 7px",
+                  borderRadius: "var(--radius-full)",
                 }}
               >
-                {value}
-              </div>
-              <div className="label-small" style={{ fontSize: "9px", marginTop: "3px" }}>
-                {label}
-              </div>
+                <span className="live-pulse-dot" style={{ width: "5px", height: "5px", background: "var(--accent)" }} />
+                LIVE PMC TELEMETRY
+              </span>
             </div>
-          ))}
+            <h1 style={{ fontSize: "20px", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
+              Command & Citizen Triage Center
+            </h1>
+          </div>
+        </div>
+
+        {/* Polished KPI Metric Badges */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "6px 14px",
+              borderRadius: "var(--radius-full)",
+              background: "var(--bg-canvas)",
+              border: "1px solid var(--border-primary)",
+            }}
+          >
+            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary)" }}>
+              {openCount}
+            </span>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-secondary)" }}>
+              Active Queue
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "6px 14px",
+              borderRadius: "var(--radius-full)",
+              background: "rgba(189, 86, 75, 0.08)",
+              border: "1px solid rgba(189, 86, 75, 0.25)",
+            }}
+          >
+            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--coral)" }}>
+              {criticalCount}
+            </span>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--coral)" }}>
+              Critical Flags
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "6px 14px",
+              borderRadius: "var(--radius-full)",
+              background: "var(--pastel-sage-bg)",
+              border: "1px solid var(--pastel-sage-border)",
+            }}
+          >
+            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--accent)" }}>
+              {resolvedToday}
+            </span>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--accent)" }}>
+              Resolved (24h)
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "6px 14px",
+              borderRadius: "var(--radius-full)",
+              background: "rgba(179, 128, 56, 0.08)",
+              border: "1px solid rgba(179, 128, 56, 0.25)",
+            }}
+          >
+            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--amber)" }}>
+              {clusters.length}
+            </span>
+            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--amber)" }}>
+              Hotspot Clusters
+            </span>
+          </div>
         </div>
 
         {/* Action Button: Emergency Broadcast */}
         <div>
           <button
             type="button"
-            className="btn btn-primary btn-sm"
+            className="btn btn-sm"
             onClick={() => {
               if (!isAdmin) {
-                setToastMessage("Admin privileges required to trigger citywide broadcasts (Sign in as admin)");
+                setToastMessage("Admin privileges required to trigger citywide broadcasts (Sign in as admin / Yash Mishra)");
                 setTimeout(() => setToastMessage(null), 3500);
                 return;
               }
@@ -349,13 +414,16 @@ export default function CommandPage() {
             }}
             style={{
               borderRadius: "var(--radius-full)",
-              background: isAdmin ? "var(--terracotta)" : "var(--bg-elevated)",
+              background: isAdmin ? "linear-gradient(135deg, #BD564B 0%, #A34439 100%)" : "var(--bg-elevated)",
               color: isAdmin ? "#FFFFFF" : "var(--text-muted)",
               border: isAdmin ? "none" : "1px solid var(--border-primary)",
+              boxShadow: isAdmin ? "0 2px 10px rgba(189, 86, 75, 0.3)" : "none",
               gap: "8px",
               padding: "8px 18px",
-              fontSize: "13px",
+              fontSize: "12.5px",
+              fontWeight: 700,
               cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
           >
             <span>{isAdmin ? "🚨" : "🔒"}</span>
@@ -364,22 +432,22 @@ export default function CommandPage() {
         </div>
       </div>
 
-      {/* Citizen Access Mode Banner if logged in as user */}
+      {/* Citizen Access Mode Banner if logged in as resident */}
       {isUser && (
         <div
           style={{
             background: "var(--pastel-amber-bg)",
             borderBottom: "1px solid var(--pastel-amber-border)",
-            padding: "9px 28px",
+            padding: "8px 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: "14px",
-            fontSize: "12.5px",
+            fontSize: "12px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-primary)" }}>
-            <span style={{ fontSize: "16px" }}>👤</span>
+            <span style={{ fontSize: "15px" }}>👤</span>
             <span>
               <strong>Resident Citizen View:</strong> You are browsing Pune's live civic triage stream in read-only mode. Field squad dispatch, SLA reassignment, and emergency broadcasts are reserved for Municipal Operators.
             </span>
@@ -400,26 +468,30 @@ export default function CommandPage() {
               boxShadow: "var(--shadow-xs)",
             }}
           >
-            👑 Switch to Admin (admin / admin)
+            👑 Switch to Admin (Yash Mishra)
           </button>
         </div>
       )}
 
-      {/* Filter Ribbon */}
+      {/* Modern Filter Ribbon */}
       <div
         style={{
-          padding: "10px 28px",
+          padding: "8px 24px",
           borderBottom: "1px solid var(--border-primary)",
-          background: "var(--bg-surface)",
+          background: "var(--bg-canvas)",
           display: "flex",
-          gap: "10px",
+          gap: "8px",
           flexWrap: "wrap",
           alignItems: "center",
         }}
       >
-        <span className="label-small" style={{ marginRight: "4px", fontSize: "10px" }}>
-          Filters
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginRight: "4px" }}>
+          <span style={{ fontSize: "12px" }}>🔍</span>
+          <span className="label-small" style={{ fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase" }}>
+            Filter Deck:
+          </span>
+        </div>
+
         {[
           {
             key: "category",
@@ -444,13 +516,18 @@ export default function CommandPage() {
         ].map(({ key, value, options }) => (
           <select
             key={key}
-            className="input"
             style={{
               width: "auto",
-              padding: "6px 14px",
+              padding: "5px 12px",
               fontSize: "12px",
+              fontWeight: 500,
               borderRadius: "var(--radius-full)",
-              background: "var(--bg-card)",
+              background: value !== "all" ? "var(--accent-bg)" : "#FFFFFF",
+              border: `1px solid ${value !== "all" ? "var(--accent-border)" : "var(--border-primary)"}`,
+              color: value !== "all" ? "var(--accent)" : "var(--text-primary)",
+              cursor: "pointer",
+              outline: "none",
+              transition: "all 0.15s ease",
             }}
             value={value}
             onChange={(e) => setFilters((f) => ({ ...f, [key]: e.target.value as any }))}
@@ -462,25 +539,46 @@ export default function CommandPage() {
             ))}
           </select>
         ))}
-        <button
-          className="btn btn-ghost btn-sm"
-          onClick={() => setFilters({ category: "all", severity: "all", status: "all", department: "all" })}
-        >
-          Reset Filters
-        </button>
-        <span className="mono" style={{ marginLeft: "auto", fontSize: "11px", color: "var(--text-dim)" }}>
-          Showing {filtered.length} of {reportsList.length} cases
-        </span>
+
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={() => setFilters({ category: "all", severity: "all", status: "all", department: "all" })}
+            style={{
+              padding: "5px 12px",
+              fontSize: "11px",
+              fontWeight: 600,
+              borderRadius: "var(--radius-full)",
+              background: "rgba(189, 86, 75, 0.08)",
+              border: "1px solid rgba(189, 86, 75, 0.25)",
+              color: "var(--coral)",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
+          >
+            <span>✕</span>
+            <span>Reset Filters</span>
+          </button>
+        )}
+
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+          <span className="live-pulse-dot" style={{ width: "6px", height: "6px", background: "var(--accent)" }} />
+          <span className="mono" style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600 }}>
+            Showing {filtered.length} of {reportsList.length} cases
+          </span>
+        </div>
       </div>
 
-      {/* Split Map + Queue View */}
+      {/* Split View: Map (52%) + Incident Action Queue (48%) */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* Left Side: Map with Hotspots */}
-        <div style={{ flex: "0 0 54%", borderRight: "1px solid var(--border-primary)", position: "relative" }}>
+        {/* Left Side: Map with Hotspots and Atmospheric Dispersion */}
+        <div style={{ flex: "0 0 52%", borderRight: "1px solid var(--border-primary)", position: "relative", overflow: "hidden", height: "100%" }}>
           <LeafletMap
             reports={filtered}
             clusters={clusters}
-            center={[18.52, 73.856]}
+            center={mapCenter}
             zoom={12}
             onReportClick={setSelectedReport}
             selectedId={selectedReport?.id}
@@ -488,24 +586,27 @@ export default function CommandPage() {
           />
         </div>
 
-        {/* Right Side: Action Queue */}
-        <div style={{ flex: "0 0 46%", display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-surface)" }}>
+        {/* Right Side: Incident Action Queue Deck */}
+        <div style={{ flex: "0 0 48%", display: "flex", flexDirection: "column", overflow: "hidden", background: "#FAF7F2" }}>
+          {/* Queue Sub-Header */}
           <div
             style={{
-              padding: "12px 20px",
+              padding: "10px 20px",
               borderBottom: "1px solid var(--border-primary)",
-              background: "var(--bg-elevated)",
+              background: "#FFFFFF",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <h2 style={{ fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
-              <span>Action Queue</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)" }}>
+                Action Queue
+              </h2>
               <span className="mono" style={{ fontSize: "11px", color: "var(--text-dim)", fontWeight: 400 }}>
                 · Ranked by Evidence Score
               </span>
-            </h2>
+            </div>
             <span
               style={{
                 fontSize: "10px",
@@ -521,16 +622,27 @@ export default function CommandPage() {
             </span>
           </div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          {/* Cards List Container */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: "10px" }}>
             {filtered.length === 0 ? (
-              <div style={{ padding: "48px 24px", textAlign: "center", color: "var(--text-dim)", fontSize: "14px" }}>
-                No incidents match current filter criteria.
+              <div
+                style={{
+                  padding: "48px 24px",
+                  textAlign: "center",
+                  color: "var(--text-dim)",
+                  fontSize: "13px",
+                  background: "#FFFFFF",
+                  borderRadius: "var(--radius-xl)",
+                  border: "1px dashed var(--border-primary)",
+                  margin: "20px 0",
+                }}
+              >
+                No incidents match current filter criteria. Click "Reset Filters" to view all records.
               </div>
             ) : (
-              filtered.map((report, idx) => {
+              filtered.map((report) => {
                 const color = severityColor(report.severity);
                 const isSelected = selectedReport?.id === report.id;
-                const sla = calculateSLA(report);
                 const isUnresolved = !["resolved", "rejected"].includes(report.status);
 
                 return (
@@ -539,63 +651,73 @@ export default function CommandPage() {
                     onClick={() => setSelectedReport(isSelected ? null : report)}
                     style={{
                       padding: "14px 16px",
-                      borderRadius: "var(--radius-lg)",
+                      borderRadius: "var(--radius-xl)",
                       cursor: "pointer",
-                      background: isSelected ? "var(--accent-bg)" : "var(--bg-card)",
+                      background: isSelected ? "var(--accent-bg)" : "#FFFFFF",
                       borderTop: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderRight: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderBottom: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderLeft: `4px solid ${color}`,
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                      animation: `slide-up 0.3s ease-out ${idx * 25}ms both`,
-                      boxShadow: isSelected ? "var(--shadow-md)" : "var(--shadow-sm)",
+                      boxShadow: isSelected ? "var(--shadow-md)" : "0 1px 3px rgba(42, 33, 27, 0.04)",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "8px" }}>
-                      <span style={{ fontSize: "20px", flexShrink: 0, marginTop: "1px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "10px" }}>
+                      <div
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "50%",
+                          background: "var(--bg-canvas)",
+                          border: "1px solid var(--border-primary)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "18px",
+                          flexShrink: 0,
+                        }}
+                      >
                         {categoryIcon(report.category)}
-                      </span>
+                      </div>
+
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: "14px", fontWeight: 700, marginBottom: "3px" }}>
-                          {truncate(report.title, 48)}
+                        <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "3px", lineHeight: 1.3 }}>
+                          {truncate(report.title, 52)}
                         </div>
-                        <div className="mono" style={{ fontSize: "11px", color: "var(--text-dim)" }}>
+                        <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }}>
                           {report.location.ward ?? "Pune Central"} · {formatRelativeTime(report.createdAt)}
                         </div>
                       </div>
 
                       {report.evidenceScore && (
-                        <div style={{ flexShrink: 0, textAlign: "right" }}>
-                          <div className="mono" style={{ fontSize: "18px", fontWeight: 800, color, lineHeight: 1 }}>
+                        <div
+                          style={{
+                            flexShrink: 0,
+                            textAlign: "center",
+                            background: "var(--bg-canvas)",
+                            border: "1px solid var(--border-primary)",
+                            padding: "4px 8px",
+                            borderRadius: "var(--radius-md)",
+                          }}
+                        >
+                          <div className="mono" style={{ fontSize: "15px", fontWeight: 800, color, lineHeight: 1 }}>
                             {report.evidenceScore.total}
                           </div>
-                          <div className="label-small" style={{ fontSize: "8px", marginTop: "2px" }}>
-                            Confidence
+                          <div className="label-small" style={{ fontSize: "8px", marginTop: "2px", color: "var(--text-dim)" }}>
+                            CONFIDENCE
                           </div>
                         </div>
                       )}
                     </div>
 
+                    {/* Tags row */}
                     <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
                       <span className={`badge badge-${report.severity}`}>{report.severity}</span>
                       <span className={`badge badge-${report.status}`}>{STATUS_LABELS[report.status]}</span>
 
-                      {/* SLA Timer Pill */}
+                      {/* Self-contained SLA countdown badge that never triggers page re-renders */}
                       {isUnresolved && (
-                        <span
-                          className="mono"
-                          style={{
-                            fontSize: "10px",
-                            fontWeight: 700,
-                            padding: "2px 8px",
-                            borderRadius: "var(--radius-full)",
-                            background: sla.expired ? "var(--coral-bg)" : "var(--bg-elevated)",
-                            color: sla.expired ? "var(--coral)" : "var(--text-muted)",
-                            border: `1px solid ${sla.expired ? "rgba(189,86,75,0.3)" : "var(--border-primary)"}`,
-                          }}
-                        >
-                          ⏳ SLA: {sla.formatted}
-                        </span>
+                        <SlaCountdownBadge createdAt={report.createdAt} severity={report.severity} />
                       )}
 
                       <span className="mono" style={{ marginLeft: "auto", fontSize: "11px", color: "var(--text-dim)" }}>
@@ -603,6 +725,7 @@ export default function CommandPage() {
                       </span>
                     </div>
 
+                    {/* Expanded details tray when card is selected */}
                     {isSelected && (
                       <div
                         style={{
@@ -619,9 +742,9 @@ export default function CommandPage() {
                               color: "var(--text-secondary)",
                               marginBottom: "12px",
                               lineHeight: 1.5,
-                              background: "var(--bg-elevated)",
-                              padding: "10px 12px",
-                              borderRadius: "var(--radius-md)",
+                              background: "#FFFFFF",
+                              padding: "10px 14px",
+                              borderRadius: "var(--radius-lg)",
                               border: "1px solid var(--border-primary)",
                             }}
                           >
@@ -629,11 +752,11 @@ export default function CommandPage() {
                             {report.aiAnalysis.reason}
                           </div>
                         )}
-                        <div style={{ display: "flex", gap: "8px" }}>
+                        <div style={{ display: "flex", gap: "10px" }}>
                           <Link
                             href={`/incidents/${report.id}`}
                             className="btn btn-secondary btn-sm"
-                            style={{ flex: 1, justifyContent: "center" }}
+                            style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-full)" }}
                           >
                             Case Record Details →
                           </Link>
@@ -642,7 +765,7 @@ export default function CommandPage() {
                               <button
                                 type="button"
                                 className="btn btn-accent btn-sm"
-                                style={{ flex: 1, justifyContent: "center" }}
+                                style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-full)" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDispatchModalReport(report);
@@ -657,13 +780,13 @@ export default function CommandPage() {
                                 style={{
                                   flex: 1,
                                   justifyContent: "center",
-                                  opacity: 0.8,
+                                  opacity: 0.85,
                                   fontSize: "12px",
-                                  background: "var(--bg-elevated)",
+                                  borderRadius: "var(--radius-full)",
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setToastMessage("Admin privileges required to dispatch crew (Sign in as admin / admin)");
+                                  setToastMessage("Admin privileges required to dispatch crew (Sign in as admin / Yash Mishra)");
                                   setTimeout(() => setToastMessage(null), 3500);
                                 }}
                                 title="Admin privileges required"

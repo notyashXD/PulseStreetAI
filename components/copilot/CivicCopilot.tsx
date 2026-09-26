@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
@@ -15,6 +16,7 @@ const QUICK_PROMPTS = [
 ];
 
 export default function CivicCopilot() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -31,6 +33,21 @@ export default function CivicCopilot() {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleToggle = () => setIsOpen((prev) => !prev);
+    window.addEventListener("toggle-pulse-copilot", handleToggle);
+    return () => window.removeEventListener("toggle-pulse-copilot", handleToggle);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 450);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -78,66 +95,69 @@ export default function CivicCopilot() {
 
   return (
     <>
-      {/* Floating Trigger Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: "fixed",
-          bottom: "28px",
-          right: "28px",
-          zIndex: 999,
-          background: "var(--text-primary)",
-          color: "white",
-          border: "none",
-          borderRadius: "var(--radius-full)",
-          padding: "12px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          cursor: "pointer",
-          boxShadow: "var(--shadow-lg)",
-          fontFamily: "var(--font-sans)",
-          fontSize: "14px",
-          fontWeight: 600,
-          transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0) scale(1)";
-        }}
-      >
-        <div
+      {/* Floating Trigger Button - only appears when scrolled down so hero section stays completely clean, and not on /command where navbar has the trigger */}
+      {scrolled && !isOpen && pathname !== "/command" && (
+        <button
+          onClick={() => setIsOpen(true)}
           style={{
-            width: "24px",
-            height: "24px",
-            borderRadius: "50%",
-            background: "var(--accent)",
+            position: "fixed",
+            bottom: "24px",
+            right: "24px",
+            zIndex: 999,
+            background: "var(--text-primary)",
+            color: "white",
+            border: "none",
+            borderRadius: "var(--radius-full)",
+            padding: "10px 18px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            fontSize: "12px",
+            gap: "8px",
+            cursor: "pointer",
+            boxShadow: "var(--shadow-xl)",
+            fontFamily: "var(--font-sans)",
+            fontSize: "13px",
+            fontWeight: 600,
+            animation: "fade-in-up 0.3s ease-out",
+            transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0) scale(1)";
           }}
         >
-          ✨
-        </div>
-        <span>Pulse</span>
-        <span
-          style={{
-            background: "var(--accent-bg)",
-            color: "var(--accent)",
-            border: "1px solid var(--accent-border)",
-            fontSize: "10px",
-            padding: "2px 6px",
-            borderRadius: "var(--radius-full)",
-            fontWeight: 700,
-            letterSpacing: "0.04em",
-          }}
-        >
-          LIVE
-        </span>
-      </button>
+          <div
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              background: "var(--accent)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+            }}
+          >
+            ✨
+          </div>
+          <span>Pulse AI</span>
+          <span
+            style={{
+              background: "var(--accent-bg)",
+              color: "var(--accent)",
+              border: "1px solid var(--accent-border)",
+              fontSize: "9px",
+              padding: "1px 5px",
+              borderRadius: "var(--radius-full)",
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+            }}
+          >
+            LIVE
+          </span>
+        </button>
+      )}
 
       {/* Slide-out Drawer */}
       {isOpen && (

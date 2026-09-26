@@ -275,6 +275,29 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Pulse AI Copilot Trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("toggle-pulse-copilot"))}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "7px 15px",
+              borderRadius: "var(--radius-full)",
+              fontSize: "12px",
+              fontWeight: 700,
+              background: "rgba(140, 94, 60, 0.08)",
+              border: "1px solid var(--accent-border)",
+              color: "var(--accent)",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            <span>✨</span>
+            <span>Pulse AI</span>
+          </button>
+
           {/* Report CTA */}
           <Link
             href="/report"
