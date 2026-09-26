@@ -52,7 +52,6 @@ export default function Navbar() {
       alignItems: "center",
       padding: "0 clamp(20px, 3vw, 48px)",
       borderBottom: "1px solid var(--border-primary)",
-      background: "rgba(250, 247, 242, 0.88)",
       backdropFilter: "blur(16px)",
       WebkitBackdropFilter: "blur(16px)",
     }}>

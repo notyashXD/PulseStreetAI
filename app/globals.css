@@ -3,6 +3,7 @@
 :root {
   /* Canvas & Surfaces: Warm Alabaster, Oat Beige, and Soft Linen */
   --bg-base: #FAF7F2;
+  --bg-canvas: #FAF7F2;
   --bg-surface: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-elevated: #F3ECE2;
@@ -14,11 +15,17 @@
   --border-hover: #D6CBC0;
   --border-active: #8C5E3C;
 
-  /* Typography: Rich Deep Espresso & Warm Roast Mocha (No harsh pure black) */
+  /* Typography: Rich Deep Espresso & Warm Roast Mocha with high readability */
   --text-primary: #2A211B;
-  --text-secondary: #5E5147;
-  --text-muted: #8C7E72;
-  --text-dim: #B2A599;
+  --text-secondary: #4E4237;
+  --text-muted: #736557;
+  --text-dim: #8E7F70;
+
+  /* Button & Nav Tokens */
+  --btn-primary-bg: #2A211B;
+  --btn-primary-text: #FAF7F2;
+  --btn-primary-bg-hover: #3F332B;
+  --nav-bg: rgba(250, 247, 242, 0.88);
 
   /* Brand Accents: Artisan Terracotta, Acorn Brown, and Soft Pastel Earths */
   --accent: #8C5E3C;
@@ -91,6 +98,7 @@
 [data-theme="dark"], .dark {
   /* Canvas & Surfaces: Warm Obsidian, Dark Roast Mocha */
   --bg-base: #141210;
+  --bg-canvas: #141210;
   --bg-surface: #1B1714;
   --bg-card: #201B17;
   --bg-elevated: #28221D;
@@ -107,6 +115,12 @@
   --text-secondary: #C8BCB0;
   --text-muted: #998B7F;
   --text-dim: #706357;
+
+  /* Button & Nav Tokens */
+  --btn-primary-bg: #C98A5B;
+  --btn-primary-text: #141210;
+  --btn-primary-bg-hover: #DE9E6E;
+  --nav-bg: rgba(20, 18, 16, 0.92);
 
   /* Brand Accents */
   --accent: #C98A5B;
@@ -250,25 +264,26 @@ a {
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .btn-primary {
-  background: var(--text-primary);
-  color: #FAF7F2;
+  background: var(--btn-primary-bg, #2A211B) !important;
+  color: var(--btn-primary-text, #FAF7F2) !important;
+  font-weight: 700;
 }
 .btn-primary:hover:not(:disabled) {
-  background: #3F332B;
+  background: var(--btn-primary-bg-hover, #3F332B) !important;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-  color: #FAF7F2;
+  color: var(--btn-primary-text, #FAF7F2) !important;
 }
 
 .btn-secondary {
   background: var(--bg-elevated);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   border: 1px solid var(--border-primary);
 }
 .btn-secondary:hover:not(:disabled) {
   background: var(--bg-hover);
   border-color: var(--border-hover);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 .btn-accent {
@@ -443,7 +458,7 @@ select.input { cursor: pointer; }
 }
 
 .nav-blur {
-  background: rgba(250, 247, 242, 0.85);
+  background: var(--nav-bg, rgba(250, 247, 242, 0.85));
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   border-bottom: 1px solid var(--border-primary);
@@ -549,7 +564,32 @@ select.input { cursor: pointer; }
 
 [data-theme="dark"] .nav-blur,
 .dark .nav-blur {
-  background: rgba(20, 18, 16, 0.88) !important;
+  background: rgba(20, 18, 16, 0.92) !important;
+}
+
+/* Explicit button theme overrides */
+[data-theme="dark"] .btn-primary,
+.dark .btn-primary {
+  background: #C98A5B !important;
+  color: #141210 !important;
+  font-weight: 700 !important;
+}
+[data-theme="dark"] .btn-primary:hover:not(:disabled),
+.dark .btn-primary:hover:not(:disabled) {
+  background: #DE9E6E !important;
+  color: #141210 !important;
+}
+
+[data-theme="light"] .btn-primary,
+:root:not([data-theme="dark"]) .btn-primary {
+  background: #2A211B !important;
+  color: #FAF7F2 !important;
+  font-weight: 700 !important;
+}
+[data-theme="light"] .btn-primary:hover:not(:disabled),
+:root:not([data-theme="dark"]) .btn-primary:hover:not(:disabled) {
+  background: #3F332B !important;
+  color: #FAF7F2 !important;
 }
 
 @media (max-width: 900px) {

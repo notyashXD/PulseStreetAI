@@ -33,18 +33,19 @@ export default function DispatchTicker() {
   return (
     <div
       style={{
-        background: "var(--bg-elevated)",
+        background: "var(--bg-surface)",
         borderBottom: "1px solid var(--border-primary)",
-        padding: "8px 24px",
+        padding: "6px 20px",
         display: "flex",
         alignItems: "center",
         gap: "12px",
         fontSize: "12px",
+        height: "34px",
         overflow: "hidden",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
-        <span className="live-indicator" style={{ fontSize: "10px" }}>DISPATCH FEED</span>
+        <span className="live-indicator" style={{ fontSize: "10px", fontWeight: 700 }}>DISPATCH FEED</span>
       </div>
 
       <div style={{ width: "1px", height: "14px", background: "var(--border-primary)" }} />
@@ -63,7 +64,7 @@ export default function DispatchTicker() {
         <span style={{ fontSize: "12px" }}>{typeConfig?.icon}</span>
         <span
           style={{
-            fontWeight: 500,
+            fontWeight: 600,
             color: "var(--text-primary)",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -72,7 +73,7 @@ export default function DispatchTicker() {
         >
           {event.text}
         </span>
-        <span className="mono" style={{ fontSize: "10px", color: "var(--text-dim)", marginLeft: "auto", flexShrink: 0 }}>
+        <span className="mono" style={{ fontSize: "10.5px", color: "var(--text-muted)", marginLeft: "auto", flexShrink: 0, fontWeight: 600 }}>
           {event.time}
         </span>
       </div>

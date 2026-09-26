@@ -525,9 +525,9 @@ export default function HomePage() {
                 style={{
                   padding: "8px 16px",
                   borderRadius: "var(--radius-full)",
-                  background: isSelected ? "var(--text-primary)" : "var(--bg-card)",
-                  color: isSelected ? "#FAF7F2" : "var(--text-secondary)",
-                  border: `1px solid ${isSelected ? "var(--text-primary)" : "var(--border-primary)"}`,
+                  background: isSelected ? "var(--btn-primary-bg, #2A211B)" : "var(--bg-card)",
+                  color: isSelected ? "var(--btn-primary-text, #FAF7F2)" : "var(--text-secondary)",
+                  border: `1px solid ${isSelected ? "var(--btn-primary-bg, #2A211B)" : "var(--border-primary)"}`,
                   fontSize: "12px",
                   fontWeight: isSelected ? 700 : 500,
                   cursor: "pointer",

@@ -288,60 +288,60 @@ export default function CommandPage() {
       {/* Streamlined Command Deck Header */}
       <div
         style={{
-          padding: "14px 24px",
+          padding: "10px 20px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "20px",
+          gap: "16px",
           flexWrap: "wrap",
           background: "var(--bg-surface)",
           borderBottom: "1px solid var(--border-primary)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
-              <span className="label-small" style={{ color: "var(--accent)", fontSize: "10px", letterSpacing: "0.06em" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "1px" }}>
+              <span className="label-small" style={{ color: "var(--accent)", fontSize: "9px", letterSpacing: "0.06em" }}>
                 MUNICIPAL OPERATIONS CENTER
               </span>
               <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "4px",
-                  fontSize: "10px",
+                  gap: "3px",
+                  fontSize: "9px",
                   fontWeight: 700,
                   color: "var(--accent)",
                   background: "var(--accent-bg)",
                   border: "1px solid var(--accent-border)",
-                  padding: "1px 7px",
+                  padding: "0 6px",
                   borderRadius: "var(--radius-full)",
                 }}
               >
-                <span className="live-pulse-dot" style={{ width: "5px", height: "5px", background: "var(--accent)" }} />
-                LIVE PMC TELEMETRY
+                <span className="live-pulse-dot" style={{ width: "4px", height: "4px", background: "var(--accent)" }} />
+                LIVE TELEMETRY
               </span>
             </div>
-            <h1 style={{ fontSize: "20px", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
+            <h1 style={{ fontSize: "17px", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--text-primary)", margin: 0 }}>
               Command & Citizen Triage Center
             </h1>
           </div>
         </div>
 
         {/* Polished KPI Metric Badges */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
+              gap: "6px",
+              padding: "4px 10px",
               borderRadius: "var(--radius-full)",
               background: "var(--bg-canvas)",
               border: "1px solid var(--border-primary)",
             }}
           >
-            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary)" }}>
+            <span className="mono" style={{ fontSize: "14px", fontWeight: 800, color: "var(--text-primary)" }}>
               {openCount}
             </span>
             <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-secondary)" }}>
@@ -353,18 +353,18 @@ export default function CommandPage() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
+              gap: "6px",
+              padding: "4px 10px",
               borderRadius: "var(--radius-full)",
               background: "rgba(189, 86, 75, 0.08)",
               border: "1px solid rgba(189, 86, 75, 0.25)",
             }}
           >
-            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--coral)" }}>
+            <span className="mono" style={{ fontSize: "14px", fontWeight: 800, color: "var(--coral)" }}>
               {criticalCount}
             </span>
             <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--coral)" }}>
-              Critical Flags
+              Critical
             </span>
           </div>
 
@@ -372,14 +372,14 @@ export default function CommandPage() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
+              gap: "6px",
+              padding: "4px 10px",
               borderRadius: "var(--radius-full)",
               background: "var(--pastel-sage-bg)",
               border: "1px solid var(--pastel-sage-border)",
             }}
           >
-            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--accent)" }}>
+            <span className="mono" style={{ fontSize: "14px", fontWeight: 800, color: "var(--accent)" }}>
               {resolvedToday}
             </span>
             <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--accent)" }}>
@@ -391,18 +391,18 @@ export default function CommandPage() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
+              gap: "6px",
+              padding: "4px 10px",
               borderRadius: "var(--radius-full)",
               background: "rgba(179, 128, 56, 0.08)",
               border: "1px solid rgba(179, 128, 56, 0.25)",
             }}
           >
-            <span className="mono" style={{ fontSize: "16px", fontWeight: 800, color: "var(--amber)" }}>
+            <span className="mono" style={{ fontSize: "14px", fontWeight: 800, color: "var(--amber)" }}>
               {clusters.length}
             </span>
             <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--amber)" }}>
-              Hotspot Clusters
+              Hotspots
             </span>
           </div>
         </div>
@@ -426,9 +426,9 @@ export default function CommandPage() {
               color: isAdmin ? "#FFFFFF" : "var(--text-muted)",
               border: isAdmin ? "none" : "1px solid var(--border-primary)",
               boxShadow: isAdmin ? "0 2px 10px rgba(189, 86, 75, 0.3)" : "none",
-              gap: "8px",
-              padding: "8px 18px",
-              fontSize: "12.5px",
+              gap: "6px",
+              padding: "6px 14px",
+              fontSize: "12px",
               fontWeight: 700,
               cursor: "pointer",
               transition: "all 0.2s ease",
@@ -658,64 +658,51 @@ export default function CommandPage() {
                     key={report.id}
                     onClick={() => setSelectedReport(isSelected ? null : report)}
                     style={{
-                      padding: "14px 16px",
-                      borderRadius: "var(--radius-xl)",
+                      padding: "12px 14px",
+                      borderRadius: "var(--radius-lg)",
                       cursor: "pointer",
                       background: isSelected ? "var(--accent-bg)" : "var(--bg-card)",
                       borderTop: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderRight: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderBottom: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
-                      borderLeft: `4px solid ${color}`,
-                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-                      boxShadow: isSelected ? "var(--shadow-md)" : "0 1px 3px rgba(42, 33, 27, 0.04)",
+                      borderLeft: `3px solid ${color}`,
+                      transition: "all 0.15s ease",
+                      boxShadow: isSelected ? "var(--shadow-sm)" : "0 1px 2px rgba(42, 33, 27, 0.03)",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "10px" }}>
-                      <div
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "50%",
-                          background: "var(--bg-canvas)",
-                          border: "1px solid var(--border-primary)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "18px",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {categoryIcon(report.category)}
-                      </div>
-
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "3px", lineHeight: 1.3 }}>
-                          {truncate(report.title, 52)}
-                        </div>
-                        <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }} suppressHydrationWarning>
-                          {report.location.ward ?? "Pune Central"} · {formatRelativeTime(report.createdAt)}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", marginBottom: "5px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+                        <span style={{ fontSize: "16px", flexShrink: 0 }}>{categoryIcon(report.category)}</span>
+                        <div style={{ fontSize: "13.5px", fontWeight: 700, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {report.title}
                         </div>
                       </div>
 
                       {report.evidenceScore && (
-                        <div
+                        <span
+                          className="mono"
                           style={{
                             flexShrink: 0,
-                            textAlign: "center",
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            padding: "2px 7px",
+                            borderRadius: "var(--radius-full)",
                             background: "var(--bg-canvas)",
                             border: "1px solid var(--border-primary)",
-                            padding: "4px 8px",
-                            borderRadius: "var(--radius-md)",
+                            color,
                           }}
                         >
-                          <div className="mono" style={{ fontSize: "15px", fontWeight: 800, color, lineHeight: 1 }}>
-                            {report.evidenceScore.total}
-                          </div>
-                          <div className="label-small" style={{ fontSize: "8px", marginTop: "2px", color: "var(--text-dim)" }}>
-                            CONFIDENCE
-                          </div>
-                        </div>
+                          {report.evidenceScore.total}% score
+                        </span>
                       )}
+                    </div>
+
+                    <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }} suppressHydrationWarning>
+                      <span>{report.location.ward ?? "Pune Central"}</span>
+                      <span>·</span>
+                      <span>{formatRelativeTime(report.createdAt)}</span>
+                      <span>·</span>
+                      <span style={{ color: "var(--text-dim)" }}>{DEPARTMENT_LABELS[report.department]}</span>
                     </div>
 
                     {/* Tags row */}
@@ -727,18 +714,14 @@ export default function CommandPage() {
                       {isUnresolved && (
                         <SlaCountdownBadge createdAt={report.createdAt} severity={report.severity} />
                       )}
-
-                      <span className="mono" style={{ marginLeft: "auto", fontSize: "11px", color: "var(--text-dim)" }}>
-                        {DEPARTMENT_LABELS[report.department]}
-                      </span>
                     </div>
 
                     {/* Expanded details tray when card is selected */}
                     {isSelected && (
                       <div
                         style={{
-                          marginTop: "14px",
-                          paddingTop: "14px",
+                          marginTop: "12px",
+                          paddingTop: "12px",
                           borderTop: "1px solid var(--border-primary)",
                           animation: "fade-in 0.2s ease-out",
                         }}
@@ -750,7 +733,7 @@ export default function CommandPage() {
                               color: "var(--text-secondary)",
                               marginBottom: "12px",
                               lineHeight: 1.5,
-                              background: "#FFFFFF",
+                              background: "var(--bg-canvas)",
                               padding: "10px 14px",
                               borderRadius: "var(--radius-lg)",
                               border: "1px solid var(--border-primary)",

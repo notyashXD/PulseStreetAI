@@ -166,8 +166,8 @@ export default function CitizenLeaderboard() {
                     disabled={isRedeemed || !canAfford}
                     onClick={() => handleRedeem(reward.id, reward.cost, reward.title)}
                     style={{
-                      background: isRedeemed ? "var(--pastel-sage-bg)" : canAfford ? "var(--text-primary)" : "var(--bg-muted)",
-                      color: isRedeemed ? "var(--pastel-sage)" : canAfford ? "#FAF7F2" : "var(--text-dim)",
+                      background: isRedeemed ? "var(--pastel-sage-bg)" : canAfford ? "var(--btn-primary-bg, #2A211B)" : "var(--bg-muted)",
+                      color: isRedeemed ? "var(--pastel-sage)" : canAfford ? "var(--btn-primary-text, #FAF7F2)" : "var(--text-dim)",
                       border: isRedeemed ? "1px solid var(--pastel-sage-border)" : "none",
                       fontSize: "11px",
                       padding: "6px 14px",

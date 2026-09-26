@@ -168,6 +168,7 @@ export default function LeafletMapInner({
     wards: false,
   });
   const [timeFilter, setTimeFilter] = useState<"24h" | "48h" | "all">("all");
+  const [layersOpen, setLayersOpen] = useState(false);
   const [windInfo] = useState({ speed: 13.4, direction: 68, label: "ENE (68°)" });
 
   useEffect(() => {
@@ -346,16 +347,15 @@ export default function LeafletMapInner({
                     </div>
                     <Link
                       href={`/incidents/${report.id}`}
+                      className="btn btn-primary btn-sm"
                       style={{
                         display: "block",
-                        padding: "7px 12px",
-                        background: "var(--text-primary)",
-                        color: "white",
+                        padding: "6px 12px",
                         borderRadius: "var(--radius-full)",
                         textAlign: "center",
                         fontSize: "12px",
-                        fontWeight: 600,
                         textDecoration: "none",
+                        width: "100%",
                       }}
                     >
                       View Details →
@@ -367,107 +367,156 @@ export default function LeafletMapInner({
           })}
       </MapContainer>
 
-      {/* Layer Control Panel Floating Widget */}
+      {/* Sleek Collapsible Layer Control */}
       {interactive && (
-        <div
-          style={{
-            position: "absolute",
-            top: "14px",
-            right: "14px",
-            zIndex: 500,
-            background: "var(--bg-card)",
-            backdropFilter: "blur(16px)",
-            borderRadius: "var(--radius-xl)",
-            padding: "12px 16px",
-            border: "1px solid var(--border-primary)",
-            boxShadow: "var(--shadow-md)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
-          <div className="label-small" style={{ fontSize: "9px" }}>Geospatial Layers</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {[
-              { key: "incidents" as const, label: "📍 Incident Markers" },
-              { key: "clusters" as const, label: "🎯 Hotspot Clusters" },
-              { key: "plumes" as const, label: "💨 Smoke Dispersion Plumes" },
-              { key: "wards" as const, label: "🏙️ Ward Heat Boundaries" },
-            ].map((layer) => (
-              <label
-                key={layer.key}
+        <div style={{ position: "absolute", top: "14px", right: "14px", zIndex: 500 }}>
+          <button
+            type="button"
+            onClick={() => setLayersOpen(!layersOpen)}
+            style={{
+              background: "var(--bg-card)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              borderRadius: "var(--radius-full)",
+              padding: "7px 14px",
+              border: "1px solid var(--border-primary)",
+              boxShadow: "var(--shadow-sm)",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "var(--text-primary)",
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <span>🗺️</span>
+            <span>Layers</span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "18px",
+                height: "18px",
+                borderRadius: "50%",
+                background: "var(--accent-bg)",
+                color: "var(--accent)",
+                fontSize: "10px",
+                fontWeight: 800,
+              }}
+            >
+              {Object.values(activeLayers).filter(Boolean).length}
+            </span>
+            <span style={{ fontSize: "9px", opacity: 0.6, transform: layersOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>▼</span>
+          </button>
+
+          {layersOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% + 8px)",
+                right: 0,
+                width: "220px",
+                background: "var(--bg-card)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                borderRadius: "var(--radius-xl)",
+                padding: "14px",
+                border: "1px solid var(--border-primary)",
+                boxShadow: "var(--shadow-lg)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                animation: "fadeIn 0.15s ease-out",
+              }}
+            >
+              <div className="label-small" style={{ fontSize: "9px" }}>Geospatial Overlays</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                {[
+                  { key: "incidents" as const, label: "📍 Incident Markers" },
+                  { key: "clusters" as const, label: "🎯 Hotspot Clusters" },
+                  { key: "plumes" as const, label: "💨 Smoke Dispersion Plumes" },
+                  { key: "wards" as const, label: "🏙️ Ward Heat Boundaries" },
+                ].map((layer) => (
+                  <label
+                    key={layer.key}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      color: activeLayers[layer.key] ? "var(--text-primary)" : "var(--text-muted)",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={activeLayers[layer.key]}
+                      onChange={(e) => setActiveLayers((prev) => ({ ...prev, [layer.key]: e.target.checked }))}
+                      style={{ accentColor: "var(--accent)", cursor: "pointer" }}
+                    />
+                    {layer.label}
+                  </label>
+                ))}
+              </div>
+
+              {/* Live Wind Direction Indicator */}
+              <div
                 style={{
+                  marginTop: "4px",
+                  paddingTop: "8px",
+                  borderTop: "1px solid var(--border-primary)",
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  color: activeLayers[layer.key] ? "var(--text-primary)" : "var(--text-muted)",
                 }}
               >
-                <input
-                  type="checkbox"
-                  checked={activeLayers[layer.key]}
-                  onChange={(e) => setActiveLayers((prev) => ({ ...prev, [layer.key]: e.target.checked }))}
-                  style={{ accentColor: "var(--accent)" }}
-                />
-                {layer.label}
-              </label>
-            ))}
-          </div>
-
-          {/* Live Wind Direction Indicator */}
-          <div
-            style={{
-              marginTop: "4px",
-              paddingTop: "8px",
-              borderTop: "1px solid var(--border-primary)",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            <div
-              style={{
-                width: "20px",
-                height: "20px",
-                borderRadius: "50%",
-                background: "var(--accent-bg)",
-                border: "1px solid var(--accent-border)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transform: `rotate(${windInfo.direction}deg)`,
-                fontSize: "10px",
-              }}
-            >
-              ↑
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    background: "var(--accent-bg)",
+                    border: "1px solid var(--accent-border)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transform: `rotate(${windInfo.direction}deg)`,
+                    fontSize: "10px",
+                    color: "var(--accent)",
+                  }}
+                >
+                  ↑
+                </div>
+                <div className="mono" style={{ fontSize: "10px", color: "var(--text-secondary)" }}>
+                  Wind: {windInfo.speed} km/h {windInfo.label}
+                </div>
+              </div>
             </div>
-            <div className="mono" style={{ fontSize: "10px", color: "var(--text-secondary)" }}>
-              Wind: {windInfo.speed} km/h {windInfo.label}
-            </div>
-          </div>
+          )}
         </div>
       )}
 
-      {/* Time-Scrubber Control Widget (Bottom Center) */}
+      {/* Time-Scrubber Control Widget (Bottom Left - avoids center map obstruction) */}
       {interactive && (
         <div
           style={{
             position: "absolute",
             bottom: "16px",
-            left: "50%",
-            transform: "translateX(-50%)",
+            left: "16px",
             zIndex: 500,
             background: "var(--bg-card)",
             backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
             borderRadius: "var(--radius-full)",
-            padding: "4px 8px",
+            padding: "3px 6px",
             border: "1px solid var(--border-primary)",
-            boxShadow: "var(--shadow-md)",
+            boxShadow: "var(--shadow-sm)",
             display: "flex",
-            gap: "4px",
+            gap: "3px",
           }}
         >
           {[
@@ -480,14 +529,14 @@ export default function LeafletMapInner({
               type="button"
               onClick={() => setTimeFilter(t.id)}
               style={{
-                padding: "4px 12px",
+                padding: "4px 10px",
                 fontSize: "11px",
                 fontWeight: 600,
                 borderRadius: "var(--radius-full)",
                 border: "none",
                 cursor: "pointer",
-                background: timeFilter === t.id ? "var(--text-primary)" : "transparent",
-                color: timeFilter === t.id ? "white" : "var(--text-muted)",
+                background: timeFilter === t.id ? "var(--btn-primary-bg, #2A211B)" : "transparent",
+                color: timeFilter === t.id ? "var(--btn-primary-text, #FAF7F2)" : "var(--text-muted)",
                 transition: "all 0.15s",
               }}
             >

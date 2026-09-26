@@ -112,8 +112,8 @@ export default function VoiceRecorder({ onTranscribed }: VoiceRecorderProps) {
                 borderRadius: "var(--radius-full)",
                 border: "none",
                 cursor: "pointer",
-                background: selectedLang === lang ? "var(--text-primary)" : "transparent",
-                color: selectedLang === lang ? "#FAF7F2" : "var(--text-secondary)",
+                background: selectedLang === lang ? "var(--accent)" : "transparent",
+                color: selectedLang === lang ? "#FFFFFF" : "var(--text-secondary)",
                 transition: "all 0.15s",
               }}
             >

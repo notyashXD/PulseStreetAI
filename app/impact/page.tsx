@@ -121,8 +121,8 @@ export default function ImpactPage() {
                 style={{
                   padding: "6px 14px", fontSize: "12px", fontWeight: 600,
                   borderRadius: "var(--radius-full)", border: "none", cursor: "pointer",
-                  background: selectedTimeframe === tf ? "var(--text-primary)" : "transparent",
-                  color: selectedTimeframe === tf ? "#ffffff" : "var(--text-muted)",
+                  background: selectedTimeframe === tf ? "var(--btn-primary-bg, #2A211B)" : "transparent",
+                  color: selectedTimeframe === tf ? "var(--btn-primary-text, #FAF7F2)" : "var(--text-muted)",
                   transition: "all 0.15s", fontFamily: "var(--font-sans)",
                 }}
               >

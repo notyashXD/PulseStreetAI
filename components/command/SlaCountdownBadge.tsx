@@ -24,11 +24,15 @@ export default function SlaCountdownBadge({ createdAt, severity }: SlaCountdownB
     return () => clearInterval(timer);
   }, [createdAt, severity]);
 
+  const limit = severity === "critical" ? 4 * 3600 * 1000 : 12 * 3600 * 1000;
+  const elapsed = Date.now() - createdAt;
+  const isOverdue = elapsed > limit;
+  const overdueMs = elapsed - limit;
+  const overdueHrs = Math.floor(overdueMs / 3600000);
+  const overdueMins = Math.floor((overdueMs % 3600000) / 60000);
+
   const hrs = Math.floor(timeRemaining / 3600000);
   const mins = Math.floor((timeRemaining % 3600000) / 60000);
-  const secs = Math.floor((timeRemaining % 60000) / 1000);
-  const formatted = `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  const expired = timeRemaining === 0;
 
   return (
     <span
@@ -36,18 +40,18 @@ export default function SlaCountdownBadge({ createdAt, severity }: SlaCountdownB
       style={{
         fontSize: "11px",
         fontWeight: 700,
-        padding: "3px 8px",
+        padding: "2px 8px",
         borderRadius: "var(--radius-full)",
-        background: expired ? "rgba(189, 86, 75, 0.12)" : "var(--bg-elevated)",
-        color: expired ? "var(--coral)" : "var(--text-secondary)",
-        border: `1px solid ${expired ? "rgba(189, 86, 75, 0.3)" : "var(--border-primary)"}`,
+        background: isOverdue ? "rgba(189, 86, 75, 0.12)" : "var(--pastel-amber-bg)",
+        color: isOverdue ? "var(--coral)" : "var(--pastel-amber)",
+        border: `1px solid ${isOverdue ? "rgba(189, 86, 75, 0.3)" : "var(--pastel-amber-border)"}`,
         display: "inline-flex",
         alignItems: "center",
         gap: "4px",
       }}
     >
-      <span style={{ fontSize: "10px" }}>⏳</span>
-      <span>SLA: {formatted}</span>
+      <span style={{ fontSize: "10px" }}>{isOverdue ? "⚠️" : "⏳"}</span>
+      <span>{isOverdue ? `Overdue (+${overdueHrs}h ${overdueMins}m)` : `SLA: ${hrs}h ${mins}m left`}</span>
     </span>
   );
 }
