@@ -174,12 +174,6 @@ export default function LeafletMapInner({
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div style={{ width: "100%", height, background: "var(--bg-elevated)", minHeight: "300px" }} />
-    );
-  }
-
   // Filter reports based on time scrubber (memoized)
   const displayedReports = useMemo(() => {
     const now = Date.now();
@@ -196,6 +190,12 @@ export default function LeafletMapInner({
       (r) => (r.category === "garbage_burning" || r.category === "smoke") && (r.severity === "high" || r.severity === "critical")
     );
   }, [displayedReports]);
+
+  if (!mounted) {
+    return (
+      <div style={{ width: "100%", height, background: "var(--bg-elevated)", minHeight: "300px" }} />
+    );
+  }
 
   return (
     <div style={{ position: "relative", width: "100%", height }}>
