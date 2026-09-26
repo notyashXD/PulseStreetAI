@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import CivicCopilot from "@/components/copilot/CivicCopilot";
 import { AuthProvider } from "@/lib/auth/AuthContext";
+import { ThemeProvider } from "@/lib/theme/ThemeContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -38,15 +39,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('streetpulse_theme_preference');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.setAttribute('data-theme', 'light');
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body>
-        <AuthProvider>
-          <Navbar />
-          <main style={{ position: "relative", zIndex: 1 }}>
-            {children}
-          </main>
-          <CivicCopilot />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Navbar />
+            <main style={{ position: "relative", zIndex: 1 }}>
+              {children}
+            </main>
+            <CivicCopilot />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

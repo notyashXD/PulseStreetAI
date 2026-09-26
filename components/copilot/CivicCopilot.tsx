@@ -132,7 +132,7 @@ export default function CivicCopilot() {
           width: "460px",
           maxWidth: "100vw",
           height: "100vh",
-          background: "#FAF7F2",
+          background: "var(--bg-base)",
           borderLeft: "1px solid var(--border-primary)",
           boxShadow: "-12px 0 36px rgba(42, 33, 27, 0.18)",
           zIndex: 1200,
@@ -147,7 +147,7 @@ export default function CivicCopilot() {
           style={{
             padding: "16px 22px",
             borderBottom: "1px solid var(--border-primary)",
-            background: "#FFFFFF",
+            background: "var(--bg-surface)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -256,7 +256,7 @@ export default function CivicCopilot() {
               disabled={loading}
               style={{
                 padding: "5px 12px",
-                background: "#FFFFFF",
+                background: "var(--bg-card)",
                 border: "1px solid var(--border-primary)",
                 borderRadius: "var(--radius-full)",
                 fontSize: "11px",
@@ -303,7 +303,7 @@ export default function CivicCopilot() {
                   maxWidth: "90%",
                   padding: "12px 16px",
                   borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                  background: isUser ? "var(--accent)" : "#FFFFFF",
+                  background: isUser ? "var(--accent)" : "var(--bg-card)",
                   color: isUser ? "#FFFFFF" : "var(--text-primary)",
                   border: isUser ? "none" : "1px solid var(--border-primary)",
                   boxShadow: isUser ? "0 2px 8px rgba(140, 94, 60, 0.25)" : "0 1px 3px rgba(42, 33, 27, 0.04)",
@@ -330,7 +330,7 @@ export default function CivicCopilot() {
                 alignSelf: "flex-start",
                 padding: "12px 16px",
                 borderRadius: "16px 16px 16px 4px",
-                background: "#FFFFFF",
+                background: "var(--bg-card)",
                 border: "1px solid var(--border-primary)",
                 fontSize: "12px",
                 color: "var(--text-muted)",
@@ -351,7 +351,7 @@ export default function CivicCopilot() {
           <div
             style={{
               padding: "8px 18px",
-              background: "#FFFFFF",
+              background: "var(--bg-surface)",
               display: "flex",
               gap: "8px",
               overflowX: "auto",
@@ -388,7 +388,7 @@ export default function CivicCopilot() {
           style={{
             padding: "14px 18px",
             borderTop: "1px solid var(--border-primary)",
-            background: "#FFFFFF",
+            background: "var(--bg-surface)",
             display: "flex",
             gap: "10px",
             alignItems: "center",

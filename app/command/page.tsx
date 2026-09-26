@@ -145,7 +145,7 @@ export default function CommandPage() {
               width: "100%",
               padding: "28px",
               boxShadow: "var(--shadow-xl)",
-              background: "#FFFFFF",
+              background: "var(--bg-card)",
               borderRadius: "var(--radius-2xl)",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -197,7 +197,7 @@ export default function CommandPage() {
                       padding: "12px 16px",
                       borderRadius: "var(--radius-lg)",
                       border: `1.5px solid ${isPicked ? "var(--accent)" : "var(--border-primary)"}`,
-                      background: isPicked ? "var(--accent-bg)" : "#FFFFFF",
+                      background: isPicked ? "var(--accent-bg)" : "var(--bg-card)",
                       cursor: "pointer",
                       transition: "all 0.2s",
                       display: "flex",
@@ -265,7 +265,7 @@ export default function CommandPage() {
             position: "fixed",
             bottom: "28px",
             right: "28px",
-            background: "#FFFFFF",
+            background: "var(--bg-card)",
             border: "1px solid var(--accent-border)",
             color: "var(--accent)",
             padding: "12px 22px",
@@ -294,7 +294,7 @@ export default function CommandPage() {
           justifyContent: "space-between",
           gap: "20px",
           flexWrap: "wrap",
-          background: "#FFFFFF",
+          background: "var(--bg-surface)",
           borderBottom: "1px solid var(--border-primary)",
         }}
       >
@@ -530,7 +530,7 @@ export default function CommandPage() {
               fontSize: "12px",
               fontWeight: 500,
               borderRadius: "var(--radius-full)",
-              background: value !== "all" ? "var(--accent-bg)" : "#FFFFFF",
+              background: value !== "all" ? "var(--accent-bg)" : "var(--bg-surface)",
               border: `1px solid ${value !== "all" ? "var(--accent-border)" : "var(--border-primary)"}`,
               color: value !== "all" ? "var(--accent)" : "var(--text-primary)",
               cursor: "pointer",
@@ -595,13 +595,13 @@ export default function CommandPage() {
         </div>
 
         {/* Right Side: Incident Action Queue Deck */}
-        <div style={{ flex: "0 0 48%", display: "flex", flexDirection: "column", overflow: "hidden", background: "#FAF7F2" }}>
+        <div style={{ flex: "0 0 48%", display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-base)" }}>
           {/* Queue Sub-Header */}
           <div
             style={{
               padding: "10px 20px",
               borderBottom: "1px solid var(--border-primary)",
-              background: "#FFFFFF",
+              background: "var(--bg-surface)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -639,7 +639,7 @@ export default function CommandPage() {
                   textAlign: "center",
                   color: "var(--text-dim)",
                   fontSize: "13px",
-                  background: "#FFFFFF",
+                  background: "var(--bg-card)",
                   borderRadius: "var(--radius-xl)",
                   border: "1px dashed var(--border-primary)",
                   margin: "20px 0",
@@ -661,7 +661,7 @@ export default function CommandPage() {
                       padding: "14px 16px",
                       borderRadius: "var(--radius-xl)",
                       cursor: "pointer",
-                      background: isSelected ? "var(--accent-bg)" : "#FFFFFF",
+                      background: isSelected ? "var(--accent-bg)" : "var(--bg-card)",
                       borderTop: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderRight: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,
                       borderBottom: `1px solid ${isSelected ? "var(--accent-border)" : "var(--border-primary)"}`,

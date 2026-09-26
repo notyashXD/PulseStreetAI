@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { useTheme } from "@/lib/theme/ThemeContext";
 import { useState, useRef, useEffect } from "react";
 
 const NAV_ITEMS = [
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const pathname = usePathname();
   const { currentUser, role, isAdmin, switchRole } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [copilotOpen, setCopilotOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -286,6 +288,38 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Theme Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "var(--radius-full)",
+              background: "var(--bg-elevated)",
+              border: "1px solid var(--border-primary)",
+              color: "var(--text-primary)",
+              cursor: "pointer",
+              fontSize: "14px",
+              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.borderColor = "var(--accent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.borderColor = "var(--border-primary)";
+            }}
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
 
           {/* Pulse AI Copilot Trigger */}
           <button

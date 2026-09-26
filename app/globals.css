@@ -88,6 +88,77 @@
   --section-spacing: 110px;
 }
 
+[data-theme="dark"], .dark {
+  /* Canvas & Surfaces: Warm Obsidian, Dark Roast Mocha */
+  --bg-base: #141210;
+  --bg-surface: #1B1714;
+  --bg-card: #201B17;
+  --bg-elevated: #28221D;
+  --bg-hover: #322A23;
+  --bg-muted: #3D342B;
+
+  /* Borders & Outlines */
+  --border-primary: #322A23;
+  --border-hover: #483C32;
+  --border-active: #C98A5B;
+
+  /* Typography: Soft Warm Alabaster & Muted Sand */
+  --text-primary: #F4EFEB;
+  --text-secondary: #C8BCB0;
+  --text-muted: #998B7F;
+  --text-dim: #706357;
+
+  /* Brand Accents */
+  --accent: #C98A5B;
+  --accent-light: #DE9E6E;
+  --accent-dark: #A5683B;
+  --accent-bg: rgba(201, 138, 91, 0.16);
+  --accent-border: rgba(201, 138, 91, 0.32);
+
+  /* Aesthetic Pastels (Luminous & Balanced for Dark Theme) */
+  --pastel-sage: #86B87D;
+  --pastel-sage-bg: rgba(134, 184, 125, 0.16);
+  --pastel-sage-border: rgba(134, 184, 125, 0.32);
+
+  --pastel-amber: #E2B258;
+  --pastel-amber-bg: rgba(226, 178, 88, 0.16);
+  --pastel-amber-border: rgba(226, 178, 88, 0.32);
+
+  --pastel-terracotta: #E27B62;
+  --pastel-terracotta-bg: rgba(226, 123, 98, 0.16);
+  --pastel-terracotta-border: rgba(226, 123, 98, 0.32);
+
+  --pastel-mauve: #BD8CB0;
+  --pastel-mauve-bg: rgba(189, 140, 176, 0.16);
+  --pastel-mauve-border: rgba(189, 140, 176, 0.32);
+
+  --pastel-slate: #7AA6C8;
+  --pastel-slate-bg: rgba(122, 166, 200, 0.16);
+  --pastel-slate-border: rgba(122, 166, 200, 0.32);
+
+  /* Severity mapping */
+  --severity-low: #86B87D;
+  --severity-medium: #E2B258;
+  --severity-high: #E27B62;
+  --severity-critical: #BD8CB0;
+
+  --amber: #E2B258;
+  --amber-bg: rgba(226, 178, 88, 0.16);
+  --sky: #7AA6C8;
+  --sky-bg: rgba(122, 166, 200, 0.16);
+  --coral: #E27B62;
+  --coral-bg: rgba(226, 123, 98, 0.16);
+  --violet: #BD8CB0;
+  --violet-bg: rgba(189, 140, 176, 0.16);
+
+  /* Diffused Dark Shadows */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.65);
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -431,6 +502,26 @@ select.input { cursor: pointer; }
 .leaflet-popup-tip { background: var(--bg-card) !important; }
 .leaflet-popup-content { margin: 12px 16px !important; line-height: 1.5 !important; }
 
+/* Dark mode overrides for Leaflet */
+[data-theme="dark"] .leaflet-container,
+.dark .leaflet-container {
+  background: #141210 !important;
+}
+[data-theme="dark"] .leaflet-tile,
+.dark .leaflet-tile {
+  filter: brightness(0.65) invert(1) contrast(3.4) hue-rotate(200deg) saturate(0.25) !important;
+}
+[data-theme="dark"] .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .leaflet-popup-tip,
+.dark .leaflet-popup-tip {
+  background: var(--bg-card) !important;
+}
+
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
@@ -449,6 +540,16 @@ select.input { cursor: pointer; }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .glass-strong,
+.dark .glass-strong {
+  background: rgba(20, 18, 16, 0.92);
+}
+
+[data-theme="dark"] .nav-blur,
+.dark .nav-blur {
+  background: rgba(20, 18, 16, 0.88) !important;
 }
 
 @media (max-width: 900px) {
