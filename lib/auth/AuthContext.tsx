@@ -22,7 +22,7 @@ export const PRESET_USERS: Record<string, { pass: string; user: AuthUser }> = {
     user: {
       id: "usr_admin_01",
       username: "admin",
-      name: "Anita Desai",
+      name: "Yash Mishra",
       role: "admin",
       title: "Chief Municipal Response Officer",
       avatar: "👑",
@@ -35,7 +35,7 @@ export const PRESET_USERS: Record<string, { pass: string; user: AuthUser }> = {
     user: {
       id: "usr_resident_01",
       username: "user",
-      name: "Rohan Kulkarni",
+      name: "Palak Khare",
       role: "user",
       title: "Verified Resident",
       avatar: "👤",

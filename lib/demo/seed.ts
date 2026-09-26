@@ -94,7 +94,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     statusHistory: [
       { status: "reported", timestamp: now - 43200000 },
       { status: "triaged", timestamp: now - 36000000 },
-      { status: "verified", timestamp: now - 25200000, operatorName: "Anita Desai" }
+      { status: "verified", timestamp: now - 25200000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,
@@ -241,7 +241,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     statusHistory: [
       { status: "reported", timestamp: now - 57600000 },
       { status: "triaged", timestamp: now - 50400000 },
-      { status: "verified", timestamp: now - 36000000, operatorName: "Anita Desai" }
+      { status: "verified", timestamp: now - 36000000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,
@@ -411,7 +411,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
       { status: "reported", timestamp: now - 172800000 },
       { status: "triaged", timestamp: now - 146880000 },
       { status: "assigned", timestamp: now - 103680000 },
-      { status: "resolved", timestamp: now - 43200000, operatorName: "Anita Desai", note: "Sidewalk swept, bins placed, shopkeeper warned." }
+      { status: "resolved", timestamp: now - 43200000, operatorName: "Yash Mishra", note: "Sidewalk swept, bins placed, shopkeeper warned." }
     ],
     resolutionNote: "Area swept, washed, and twin waste receptacles installed.",
     resolutionVerified: true,
@@ -659,7 +659,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     statusHistory: [
       { status: "reported", timestamp: now - 32400000 },
       { status: "triaged", timestamp: now - 25200000 },
-      { status: "verified", timestamp: now - 10800000, operatorName: "Anita Desai" }
+      { status: "verified", timestamp: now - 10800000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,
@@ -903,7 +903,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     
     statusHistory: [
       { status: "reported", timestamp: now - 32400000 },
-      { status: "triaged", timestamp: now - 18000000, operatorName: "Anita Desai" }
+      { status: "triaged", timestamp: now - 18000000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,
@@ -1002,7 +1002,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     statusHistory: [
       { status: "reported", timestamp: now - 36000000 },
       { status: "triaged", timestamp: now - 28800000 },
-      { status: "verified", timestamp: now - 10800000, operatorName: "Anita Desai" }
+      { status: "verified", timestamp: now - 10800000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,
@@ -1175,7 +1175,7 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
     statusHistory: [
       { status: "reported", timestamp: now - 28800000 },
       { status: "triaged", timestamp: now - 21600000 },
-      { status: "verified", timestamp: now - 10800000, operatorName: "Anita Desai" }
+      { status: "verified", timestamp: now - 10800000, operatorName: "Yash Mishra" }
     ],
     
     resolutionVerified: false,

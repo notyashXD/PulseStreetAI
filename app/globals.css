@@ -84,7 +84,7 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 
   --nav-height: 72px;
-  --container-width: 1200px;
+  --container-width: 1580px;
   --section-spacing: 110px;
 }
 
@@ -356,8 +356,9 @@ select.input { cursor: pointer; }
 
 .page-container {
   max-width: var(--container-width);
+  width: 100%;
   margin: 0 auto;
-  padding: 48px 32px;
+  padding: 48px clamp(20px, 3vw, 48px);
   position: relative;
 }
 

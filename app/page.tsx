@@ -165,7 +165,7 @@ export default function HomePage() {
       )}
 
       {/* Hero section */}
-      <div style={{ padding: "72px 32px 0", maxWidth: "var(--container-width)", margin: "0 auto" }}>
+      <div style={{ padding: "72px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
         <div className="animate-in" style={{
           display: "flex", justifyContent: "space-between", alignItems: "flex-start",
           gap: "48px", flexWrap: "wrap", marginBottom: "40px",
@@ -356,18 +356,18 @@ export default function HomePage() {
       </div>
 
       {/* Geospatial Hazard Map & Plume Layer */}
-      <div style={{ padding: "0 32px", maxWidth: "var(--container-width)", margin: "0 auto 56px" }}>
+      <div style={{ padding: "0 clamp(20px, 3vw, 48px)", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto 56px" }}>
         <div className="card" style={{
           overflow: "hidden", borderRadius: "var(--radius-3xl)",
           animation: "fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards",
           opacity: 0,
         }}>
           <div style={{ position: "relative" }}>
-            <div style={{ height: "500px" }}>
+            <div style={{ height: "540px" }}>
               <LeafletMap
                 reports={filteredReports} clusters={clusters}
                 center={[selectedWardMeta.lat, selectedWardMeta.lng]} zoom={selectedWardMeta.zoom}
-                onReportClick={setSelectedReport} selectedId={selectedReport?.id} height="500px"
+                onReportClick={setSelectedReport} selectedId={selectedReport?.id} height="540px"
               />
             </div>
 

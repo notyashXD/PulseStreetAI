@@ -95,10 +95,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Role-Based Credentials (Demo)
 
-| Role | Username | Password | Default View | Access Scope |
-| :--- | :--- | :--- | :--- | :--- |
-| **Municipal Admin** | `admin` | `admin` | `/command` | Full Operator Privileges (Dispatch, SLA Triage, Optical Audit, Broadcasts) |
-| **Citizen Monitor** | `user` | `user` | `/` | Resident Privileges (Hazard Reporting, AQI Telemetry, Community Feed) |
+| Role | Name | Username | Password | Default View | Access Scope |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Municipal Admin** | **Yash Mishra** | `admin` | `admin` | `/command` | Full Operator Privileges (Dispatch, SLA Triage, Optical Audit, Broadcasts) |
+| **Citizen Monitor** | **Palak Khare** | `user` | `user` | `/` | Resident Privileges (Hazard Reporting, AQI Telemetry, Community Feed) |
 
 ---
 

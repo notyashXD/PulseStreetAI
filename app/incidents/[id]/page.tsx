@@ -58,7 +58,7 @@ export default function IncidentDetailPage() {
   const isResolved = report.status === "resolved";
 
   return (
-    <div className="page-container" style={{ maxWidth: "1000px" }}>
+    <div className="page-container" style={{ maxWidth: "1280px" }}>
       {/* Breadcrumb */}
       <div style={{ fontSize: "13px", color: "var(--text-dim)", marginBottom: "24px", display: "flex", gap: "8px", alignItems: "center" }}>
         <Link href="/" style={{ color: "var(--text-muted)" }}>Overview</Link>
