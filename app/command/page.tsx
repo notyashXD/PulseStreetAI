@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Report, IssueCategory, Severity, ReportStatus } from "@/lib/types";
 import { CATEGORY_LABELS, STATUS_LABELS, DEPARTMENT_LABELS } from "@/lib/types";
@@ -34,7 +34,12 @@ const DISPATCH_CREWS = [
 
 export default function CommandPage() {
   const { isAdmin, isUser, switchRole } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [reportsList, setReportsList] = useState<Report[]>(() => getDemoReports());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [filters, setFilters] = useState<FilterState>({
     category: "all",
     severity: "all",
@@ -100,7 +105,10 @@ export default function CommandPage() {
   const hasActiveFilters = filters.category !== "all" || filters.severity !== "all" || filters.status !== "all" || filters.department !== "all";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - var(--nav-height))", background: "var(--bg-canvas)", overflow: "hidden" }}>
+    <div
+      suppressHydrationWarning
+      style={{ display: "flex", flexDirection: "column", height: "calc(100vh - var(--nav-height))", background: "var(--bg-canvas)", overflow: "hidden" }}
+    >
       {/* Live Dispatch Ticker */}
       <DispatchTicker />
 
@@ -684,7 +692,7 @@ export default function CommandPage() {
                         <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "3px", lineHeight: 1.3 }}>
                           {truncate(report.title, 52)}
                         </div>
-                        <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                        <div className="mono" style={{ fontSize: "11px", color: "var(--text-muted)" }} suppressHydrationWarning>
                           {report.location.ward ?? "Pune Central"} · {formatRelativeTime(report.createdAt)}
                         </div>
                       </div>

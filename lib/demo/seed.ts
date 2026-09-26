@@ -1311,8 +1311,19 @@ const RAW_REPORTS: Omit<Report, "evidenceScore">[] = [
   },
 ];
 
+function deterministicSeed(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
 export const DEMO_REPORTS: Report[] = RAW_REPORTS.map((r) => {
   const pair = CATEGORY_REMEDIATION_PAIRS[r.category] || CATEGORY_REMEDIATION_PAIRS.other;
+  const pseudoSeed = deterministicSeed(r.id);
+  const nearbySeed = pseudoSeed % 4;
   return {
     ...r,
     photoUrls: r.photoUrls && r.photoUrls.length > 0 ? r.photoUrls : [pair.before],
@@ -1324,7 +1335,7 @@ export const DEMO_REPORTS: Report[] = RAW_REPORTS.map((r) => {
         : [],
     evidenceScore: computeEvidenceScore(
       r,
-      Math.floor(Math.random() * 4),
+      nearbySeed,
       r.environmentalContext?.aqi
         ? Math.max(0, Math.min(20, Math.round((r.environmentalContext.aqi - 100) / 10)))
         : 0

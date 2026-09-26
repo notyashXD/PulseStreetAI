@@ -19,8 +19,11 @@ export function haversineDistance(
 
 export function obscureLocation(lat: number, lng: number): { lat: number; lng: number } {
   const offsetDeg = 0.003;
-  const angle = Math.random() * 2 * Math.PI;
-  const magnitude = (0.5 + Math.random() * 0.5) * offsetDeg;
+  const seed = Math.sin(lat * 12.9898 + lng * 78.233) * 43758.5453;
+  const pseudoRand1 = Math.abs(seed - Math.floor(seed));
+  const pseudoRand2 = Math.abs(Math.sin(lat + lng) * 10000 % 1);
+  const angle = pseudoRand1 * 2 * Math.PI;
+  const magnitude = (0.5 + pseudoRand2 * 0.5) * offsetDeg;
   return {
     lat: lat + magnitude * Math.cos(angle),
     lng: lng + magnitude * Math.sin(angle),
