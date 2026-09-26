@@ -16,7 +16,19 @@ export default function Navbar() {
   const pathname = usePathname();
   const { currentUser, role, isAdmin, switchRole } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [copilotOpen, setCopilotOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOpen = () => setCopilotOpen(true);
+    const handleClose = () => setCopilotOpen(false);
+    window.addEventListener("open-pulse-copilot", handleOpen);
+    window.addEventListener("close-pulse-copilot", handleClose);
+    return () => {
+      window.removeEventListener("open-pulse-copilot", handleOpen);
+      window.removeEventListener("close-pulse-copilot", handleClose);
+    };
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -287,11 +299,12 @@ export default function Navbar() {
               borderRadius: "var(--radius-full)",
               fontSize: "12px",
               fontWeight: 700,
-              background: "rgba(140, 94, 60, 0.08)",
-              border: "1px solid var(--accent-border)",
-              color: "var(--accent)",
+              background: copilotOpen ? "var(--accent)" : "rgba(140, 94, 60, 0.08)",
+              border: `1px solid ${copilotOpen ? "var(--accent)" : "var(--accent-border)"}`,
+              color: copilotOpen ? "#FFFFFF" : "var(--accent)",
               cursor: "pointer",
-              transition: "all 0.2s",
+              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              boxShadow: copilotOpen ? "0 2px 8px rgba(140, 94, 60, 0.25)" : "none",
             }}
           >
             <span>✨</span>

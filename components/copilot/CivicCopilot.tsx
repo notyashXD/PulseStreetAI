@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
@@ -9,19 +8,18 @@ interface Message {
 }
 
 const QUICK_PROMPTS = [
-  "📋 Generate Morning Dispatch Briefing",
-  "📢 Draft Trilingual Air Quality Advisory",
-  "🔥 Summarize High-Risk Garbage Burning Hotspots",
-  "⚡ Which incidents exceed 24h SLA?",
+  "📋 Morning Dispatch Briefing",
+  "📢 Trilingual Air Quality Advisory",
+  "🔥 Summarize High-Risk Hotspots",
+  "⚡ Incidents Exceeding SLA",
 ];
 
 export default function CivicCopilot() {
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: `### 🤖 Pulse — Civic Intelligence Assistant\n\nI am Pulse, your civic intelligence assistant for StreetPulse. I monitor live environmental sensors, citizen reports, and municipal triage across Pune.\n\nAsk me anything or pick a quick action below:`,
+      content: `### 🤖 Pulse — Civic Intelligence Assistant\n\nI am **Pulse**, your municipal intelligence assistant for StreetPulse. I synthesize live environmental telemetry (Open-Meteo AQI & wind), incoming citizen hazard reports, and algorithmic triage priority across Pune.\n\nAsk me anything or select a rapid operations action below:`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -33,27 +31,41 @@ export default function CivicCopilot() {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleToggle = () => setIsOpen((prev) => !prev);
+    const handleToggle = () => {
+      setIsOpen((prev) => {
+        const next = !prev;
+        window.dispatchEvent(new CustomEvent(next ? "open-pulse-copilot" : "close-pulse-copilot"));
+        return next;
+      });
+    };
     window.addEventListener("toggle-pulse-copilot", handleToggle);
     return () => window.removeEventListener("toggle-pulse-copilot", handleToggle);
   }, []);
 
+  // Keyboard shortcut: Escape to close
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 450);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+        window.dispatchEvent(new CustomEvent("close-pulse-copilot"));
+      }
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isOpen]);
+
+  const closePanel = () => {
+    setIsOpen(false);
+    window.dispatchEvent(new CustomEvent("close-pulse-copilot"));
+  };
 
   const handleSend = async (textToSend?: string) => {
     const text = textToSend || input;
@@ -85,7 +97,7 @@ export default function CivicCopilot() {
         ...prev,
         {
           role: "assistant",
-          content: "⚠️ Unable to reach intelligence server. Please verify network or API keys.",
+          content: "⚠️ Unable to reach intelligence server. Please verify network connectivity or API credentials.",
         },
       ]);
     } finally {
@@ -93,309 +105,320 @@ export default function CivicCopilot() {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <>
-      {/* Floating Trigger Button - only appears when scrolled down so hero section stays completely clean, and not on /command where navbar has the trigger */}
-      {scrolled && !isOpen && pathname !== "/command" && (
-        <button
-          onClick={() => setIsOpen(true)}
-          style={{
-            position: "fixed",
-            bottom: "24px",
-            right: "24px",
-            zIndex: 999,
-            background: "var(--text-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: "var(--radius-full)",
-            padding: "10px 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            cursor: "pointer",
-            boxShadow: "var(--shadow-xl)",
-            fontFamily: "var(--font-sans)",
-            fontSize: "13px",
-            fontWeight: 600,
-            animation: "fade-in-up 0.3s ease-out",
-            transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0) scale(1)";
-          }}
-        >
-          <div
-            style={{
-              width: "22px",
-              height: "22px",
-              borderRadius: "50%",
-              background: "var(--accent)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "11px",
-            }}
-          >
-            ✨
-          </div>
-          <span>Pulse AI</span>
-          <span
-            style={{
-              background: "var(--accent-bg)",
-              color: "var(--accent)",
-              border: "1px solid var(--accent-border)",
-              fontSize: "9px",
-              padding: "1px 5px",
-              borderRadius: "var(--radius-full)",
-              fontWeight: 700,
-              letterSpacing: "0.04em",
-            }}
-          >
-            LIVE
-          </span>
-        </button>
-      )}
+      {/* Backdrop overlay */}
+      <div
+        onClick={closePanel}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(42, 33, 27, 0.45)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1190,
+          animation: "fade-in 0.2s ease-out",
+        }}
+      />
 
-      {/* Slide-out Drawer */}
-      {isOpen && (
+      {/* Slide-over Right Panel */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: "460px",
+          maxWidth: "100vw",
+          height: "100vh",
+          background: "#FAF7F2",
+          borderLeft: "1px solid var(--border-primary)",
+          boxShadow: "-12px 0 36px rgba(42, 33, 27, 0.18)",
+          zIndex: 1200,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          animation: "slide-left 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        {/* Panel Header */}
         <div
           style={{
-            position: "fixed",
-            bottom: "84px",
-            right: "28px",
-            width: "440px",
-            maxWidth: "calc(100vw - 40px)",
-            height: "620px",
-            maxHeight: "calc(100vh - 120px)",
-            background: "var(--bg-card)",
-            border: "1px solid var(--border-primary)",
-            borderRadius: "var(--radius-2xl)",
-            boxShadow: "var(--shadow-xl)",
-            zIndex: 1000,
+            padding: "16px 22px",
+            borderBottom: "1px solid var(--border-primary)",
+            background: "#FFFFFF",
             display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            animation: "slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          {/* Header */}
-          <div
-            style={{
-              padding: "16px 20px",
-              borderBottom: "1px solid var(--border-primary)",
-              background: "var(--bg-elevated)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "var(--radius-md)",
-                  background: "var(--accent-bg)",
-                  border: "1px solid var(--accent-border)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--accent)",
-                  fontSize: "16px",
-                }}
-              >
-                🤖
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "var(--radius-md)",
+                background: "var(--accent-bg)",
+                border: "1px solid var(--accent-border)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--accent)",
+                fontSize: "18px",
+              }}
+            >
+              🤖
+            </div>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ fontSize: "15px", fontWeight: 800, color: "var(--text-primary)" }}>
+                  Pulse AI
+                </span>
+                <span
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 700,
+                    padding: "1px 6px",
+                    borderRadius: "var(--radius-full)",
+                    background: "var(--accent-bg)",
+                    border: "1px solid var(--accent-border)",
+                    color: "var(--accent)",
+                  }}
+                >
+                  GEMINI 2.5
+                </span>
               </div>
-              <div>
-                <div style={{ fontSize: "14px", fontWeight: 700 }}>Pulse AI</div>
-                <div className="label-small" style={{ fontSize: "9px" }}>Civic Intelligence · Powered by Gemini</div>
+              <div className="label-small" style={{ fontSize: "10px", marginTop: "1px", color: "var(--text-muted)" }}>
+                Autonomous Municipal Intelligence
               </div>
             </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* Live Telemetry Pill */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                padding: "3px 8px",
+                borderRadius: "var(--radius-full)",
+                background: "rgba(212, 168, 67, 0.12)",
+                border: "1px solid rgba(212, 168, 67, 0.3)",
+                fontSize: "10px",
+                fontWeight: 700,
+                color: "var(--amber)",
+              }}
+            >
+              <span className="live-pulse-dot" style={{ width: "5px", height: "5px", background: "var(--amber)" }} />
+              <span>AQI 142</span>
+            </div>
+
+            {/* Close Button */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={closePanel}
               className="btn btn-ghost btn-sm"
-              style={{ padding: "4px 8px", fontSize: "16px", color: "var(--text-muted)" }}
+              style={{
+                borderRadius: "50%",
+                width: "30px",
+                height: "30px",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "15px",
+                color: "var(--text-muted)",
+              }}
+              title="Close panel (Esc)"
             >
               ✕
             </button>
           </div>
+        </div>
 
-          {/* Quick Prompts Ribbon */}
-          <div
-            style={{
-              padding: "10px 14px",
-              borderBottom: "1px solid var(--border-primary)",
-              background: "var(--bg-surface)",
-              overflowX: "auto",
-              display: "flex",
-              gap: "6px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {QUICK_PROMPTS.map((prompt) => (
-              <button
-                key={prompt}
-                onClick={() => handleSend(prompt)}
-                disabled={loading}
+        {/* Quick Prompts Ribbon */}
+        <div
+          style={{
+            padding: "10px 18px",
+            borderBottom: "1px solid var(--border-primary)",
+            background: "var(--bg-canvas)",
+            overflowX: "auto",
+            display: "flex",
+            gap: "8px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {QUICK_PROMPTS.map((prompt) => (
+            <button
+              key={prompt}
+              onClick={() => handleSend(prompt)}
+              disabled={loading}
+              style={{
+                padding: "5px 12px",
+                background: "#FFFFFF",
+                border: "1px solid var(--border-primary)",
+                borderRadius: "var(--radius-full)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "var(--text-secondary)",
+                cursor: "pointer",
+                fontFamily: "var(--font-sans)",
+                flexShrink: 0,
+                transition: "all 0.15s ease",
+                boxShadow: "0 1px 2px rgba(42, 33, 27, 0.04)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--accent)";
+                e.currentTarget.style.color = "var(--accent)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border-primary)";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+
+        {/* Messages Container */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "18px 20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "14px",
+          }}
+        >
+          {messages.map((m, idx) => {
+            const isUser = m.role === "user";
+            return (
+              <div
+                key={idx}
                 style={{
-                  padding: "5px 12px",
-                  background: "var(--bg-elevated)",
-                  border: "1px solid var(--border-primary)",
-                  borderRadius: "var(--radius-full)",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  color: "var(--text-secondary)",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-sans)",
-                  flexShrink: 0,
-                  transition: "all 0.15s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "var(--bg-hover)";
-                  e.currentTarget.style.color = "var(--text-primary)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "var(--bg-elevated)";
-                  e.currentTarget.style.color = "var(--text-secondary)";
+                  alignSelf: isUser ? "flex-end" : "flex-start",
+                  maxWidth: "90%",
+                  padding: "12px 16px",
+                  borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                  background: isUser ? "var(--accent)" : "#FFFFFF",
+                  color: isUser ? "#FFFFFF" : "var(--text-primary)",
+                  border: isUser ? "none" : "1px solid var(--border-primary)",
+                  boxShadow: isUser ? "0 2px 8px rgba(140, 94, 60, 0.25)" : "0 1px 3px rgba(42, 33, 27, 0.04)",
+                  fontSize: "13px",
+                  lineHeight: 1.5,
                 }}
               >
-                {prompt}
+                <div
+                  style={{ whiteSpace: "pre-wrap" }}
+                  dangerouslySetInnerHTML={{
+                    __html: m.content
+                      .replace(/### (.*?)\n/g, '<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--text-primary);">$1</div>')
+                      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                      .replace(/> (.*?)\n/g, '<blockquote style="border-left:2px solid var(--accent);padding-left:8px;margin:6px 0;color:var(--text-muted);">$1</blockquote>'),
+                  }}
+                />
+              </div>
+            );
+          })}
+
+          {loading && (
+            <div
+              style={{
+                alignSelf: "flex-start",
+                padding: "12px 16px",
+                borderRadius: "16px 16px 16px 4px",
+                background: "#FFFFFF",
+                border: "1px solid var(--border-primary)",
+                fontSize: "12px",
+                color: "var(--text-muted)",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <span className="live-pulse-dot" style={{ background: "var(--accent)" }} />
+              <span>Analyzing live Pune telemetry and generating operational assessment...</span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Action Suggestions Chips */}
+        {actionSuggestions.length > 0 && (
+          <div
+            style={{
+              padding: "8px 18px",
+              background: "#FFFFFF",
+              display: "flex",
+              gap: "8px",
+              overflowX: "auto",
+              borderTop: "1px solid var(--border-primary)",
+            }}
+          >
+            {actionSuggestions.map((s) => (
+              <button
+                key={s}
+                onClick={() => handleSend(s)}
+                disabled={loading}
+                style={{
+                  padding: "4px 10px",
+                  background: "var(--accent-bg)",
+                  border: "1px solid var(--accent-border)",
+                  color: "var(--accent)",
+                  borderRadius: "var(--radius-full)",
+                  fontSize: "10.5px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "var(--font-mono)",
+                  flexShrink: 0,
+                  transition: "all 0.15s ease",
+                }}
+              >
+                + {s}
               </button>
             ))}
           </div>
+        )}
 
-          {/* Messages Container */}
-          <div
+        {/* Bottom Input Area */}
+        <div
+          style={{
+            padding: "14px 18px",
+            borderTop: "1px solid var(--border-primary)",
+            background: "#FFFFFF",
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+          }}
+        >
+          <input
+            className="input"
             style={{
+              borderRadius: "var(--radius-full)",
+              fontSize: "13px",
+              padding: "10px 16px",
+              background: "var(--bg-canvas)",
               flex: 1,
-              overflowY: "auto",
-              padding: "16px 20px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "14px",
             }}
+            placeholder="Ask Pulse (e.g. 'Draft Hadapsar briefing')..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            disabled={loading}
+          />
+          <button
+            className="btn btn-primary btn-sm"
+            style={{ borderRadius: "var(--radius-full)", padding: "10px 18px", fontSize: "12.5px", fontWeight: 700 }}
+            onClick={() => handleSend()}
+            disabled={loading || !input.trim()}
           >
-            {messages.map((m, idx) => {
-              const isUser = m.role === "user";
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    alignSelf: isUser ? "flex-end" : "flex-start",
-                    maxWidth: "88%",
-                    padding: "12px 16px",
-                    borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                    background: isUser ? "var(--text-primary)" : "var(--bg-elevated)",
-                    color: isUser ? "white" : "var(--text-primary)",
-                    border: isUser ? "none" : "1px solid var(--border-primary)",
-                    fontSize: "13px",
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <div
-                    style={{ whiteSpace: "pre-wrap" }}
-                    dangerouslySetInnerHTML={{
-                      __html: m.content
-                        .replace(/### (.*?)\n/g, '<div style="font-weight:700;font-size:14px;margin-bottom:6px;">$1</div>')
-                        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                        .replace(/> (.*?)\n/g, '<blockquote style="border-left:2px solid var(--accent);padding-left:8px;margin:6px 0;color:var(--text-muted);">$1</blockquote>'),
-                    }}
-                  />
-                </div>
-              );
-            })}
-            {loading && (
-              <div
-                style={{
-                  alignSelf: "flex-start",
-                  padding: "12px 16px",
-                  borderRadius: "16px 16px 16px 4px",
-                  background: "var(--bg-elevated)",
-                  border: "1px solid var(--border-primary)",
-                  fontSize: "12px",
-                  color: "var(--text-muted)",
-                }}
-              >
-                <span className="live-indicator">Analyzing municipal records...</span>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Action Suggestions Chips */}
-          {actionSuggestions.length > 0 && (
-            <div
-              style={{
-                padding: "6px 14px",
-                background: "var(--bg-surface)",
-                display: "flex",
-                gap: "6px",
-                overflowX: "auto",
-                borderTop: "1px solid var(--border-primary)",
-              }}
-            >
-              {actionSuggestions.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => handleSend(s)}
-                  disabled={loading}
-                  style={{
-                    padding: "4px 10px",
-                    background: "var(--accent-bg)",
-                    border: "1px solid var(--accent-border)",
-                    color: "var(--accent)",
-                    borderRadius: "var(--radius-full)",
-                    fontSize: "10px",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    fontFamily: "var(--font-mono)",
-                    flexShrink: 0,
-                  }}
-                >
-                  + {s}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Input Area */}
-          <div
-            style={{
-              padding: "12px 16px",
-              borderTop: "1px solid var(--border-primary)",
-              background: "var(--bg-elevated)",
-              display: "flex",
-              gap: "8px",
-            }}
-          >
-            <input
-              className="input"
-              style={{
-                borderRadius: "var(--radius-full)",
-                fontSize: "13px",
-                padding: "8px 16px",
-                background: "var(--bg-surface)",
-              }}
-              placeholder="Ask Pulse (e.g. 'Draft Hadapsar briefing')..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              disabled={loading}
-            />
-            <button
-              className="btn btn-primary btn-sm"
-              style={{ borderRadius: "var(--radius-full)", padding: "0 16px" }}
-              onClick={() => handleSend()}
-              disabled={loading || !input.trim()}
-            >
-              Send
-            </button>
-          </div>
+            Send
+          </button>
         </div>
-      )}
+      </div>
     </>
   );
 }
