@@ -15,6 +15,7 @@ import IncidentCard from "@/components/incidents/IncidentCard";
 import AQICard from "@/components/aqi/AQICard";
 import AQITrend from "@/components/aqi/AQITrend";
 import { useAuth } from "@/lib/auth/AuthContext";
+import ScrollVideoShowcase from "@/components/showcase/ScrollVideoShowcase";
 
 const LeafletMap = dynamic(() => import("@/components/map/LeafletMap"), { ssr: false });
 
@@ -164,8 +165,11 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Hero section */}
-      <div style={{ padding: "72px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
+      {/* Apple-style Scroll-Driven Video Showcase */}
+      <ScrollVideoShowcase />
+
+      {/* Hero section & Civic Command Hub */}
+      <div id="civic-dashboard" style={{ padding: "72px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
         <div className="animate-in" style={{
           display: "flex", justifyContent: "space-between", alignItems: "flex-start",
           gap: "48px", flexWrap: "wrap", marginBottom: "40px",
