@@ -46,7 +46,7 @@ export default function RootLayout({
             __html: `
               try {
                 var theme = localStorage.getItem('streetpulse_theme_preference');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                if (theme === 'dark') {
                   document.documentElement.setAttribute('data-theme', 'dark');
                   document.documentElement.classList.add('dark');
                 } else {
