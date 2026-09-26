@@ -52,8 +52,9 @@ export default function Navbar() {
       alignItems: "center",
       padding: "0 clamp(20px, 3vw, 48px)",
       borderBottom: "1px solid var(--border-primary)",
-      backdropFilter: "blur(16px)",
-      WebkitBackdropFilter: "blur(16px)",
+      backdropFilter: "blur(20px) saturate(1.2)",
+      WebkitBackdropFilter: "blur(20px) saturate(1.2)",
+      boxShadow: "0 2px 20px -2px rgba(42, 33, 27, 0.04)",
     }}>
       <div style={{
         maxWidth: "var(--container-width)",
@@ -100,10 +101,11 @@ export default function Navbar() {
         <div style={{
           display: "flex",
           gap: "4px",
-          background: "var(--bg-elevated)",
-          padding: "4px",
+          background: "var(--bg-canvas)",
+          padding: "4px 6px",
           borderRadius: "var(--radius-full)",
           border: "1px solid var(--border-primary)",
+          boxShadow: "inset 0 1px 3px rgba(42, 33, 27, 0.04)",
         }}>
           {NAV_ITEMS.map(({ label, href, badge }) => {
             const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
@@ -115,13 +117,14 @@ export default function Navbar() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "6px 14px",
+                  padding: "6px 16px",
                   borderRadius: "var(--radius-full)",
                   fontSize: "13px",
-                  fontWeight: isActive ? 700 : 500,
-                  color: isActive ? "var(--text-primary)" : "var(--text-muted)",
-                  background: isActive ? "var(--bg-surface)" : "transparent",
-                  boxShadow: isActive ? "var(--shadow-xs)" : "none",
+                  fontWeight: isActive ? 700 : 600,
+                  color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                  background: isActive ? "var(--bg-card)" : "transparent",
+                  border: isActive ? "1px solid var(--border-primary)" : "1px solid transparent",
+                  boxShadow: isActive ? "0 2px 8px rgba(42, 33, 27, 0.06), 0 1px 2px rgba(42, 33, 27, 0.04)" : "none",
                   transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                   textDecoration: "none",
                 }}
@@ -130,10 +133,11 @@ export default function Navbar() {
                 {badge && !isAdmin && (
                   <span style={{
                     fontSize: "9px",
-                    fontWeight: 700,
-                    padding: "1px 5px",
+                    fontWeight: 800,
+                    padding: "1px 6px",
                     borderRadius: "var(--radius-full)",
-                    background: "rgba(140, 94, 60, 0.12)",
+                    background: "var(--accent-bg)",
+                    border: "1px solid var(--accent-border)",
                     color: "var(--accent)",
                   }}>
                     {badge}
@@ -328,16 +332,16 @@ export default function Navbar() {
               display: "inline-flex",
               alignItems: "center",
               gap: "6px",
-              padding: "7px 15px",
+              padding: "7px 16px",
               borderRadius: "var(--radius-full)",
               fontSize: "12px",
               fontWeight: 700,
-              background: copilotOpen ? "var(--accent)" : "rgba(140, 94, 60, 0.08)",
+              background: copilotOpen ? "var(--accent)" : "linear-gradient(135deg, rgba(201, 138, 91, 0.14) 0%, rgba(182, 85, 69, 0.1) 100%)",
               border: `1px solid ${copilotOpen ? "var(--accent)" : "var(--accent-border)"}`,
               color: copilotOpen ? "#FFFFFF" : "var(--accent)",
               cursor: "pointer",
               transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-              boxShadow: copilotOpen ? "0 2px 8px rgba(140, 94, 60, 0.25)" : "none",
+              boxShadow: copilotOpen ? "0 2px 10px rgba(140, 94, 60, 0.3)" : "0 1px 3px rgba(140, 94, 60, 0.08)",
             }}
           >
             <span>✨</span>
@@ -349,11 +353,11 @@ export default function Navbar() {
             href="/report"
             className="btn btn-primary btn-sm"
             style={{
-              padding: "7px 16px",
+              padding: "7px 18px",
               borderRadius: "var(--radius-full)",
               fontSize: "12.5px",
               fontWeight: 700,
-              boxShadow: "var(--shadow-sm)",
+              boxShadow: "0 2px 10px rgba(42, 33, 27, 0.15)",
             }}
           >
             + Report Hazard

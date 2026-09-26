@@ -277,13 +277,13 @@ a {
 
 .btn-secondary {
   background: var(--bg-elevated);
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   border: 1px solid var(--border-primary);
 }
 .btn-secondary:hover:not(:disabled) {
   background: var(--bg-hover);
   border-color: var(--border-hover);
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
 }
 
 .btn-accent {

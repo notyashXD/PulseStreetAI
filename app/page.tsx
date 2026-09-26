@@ -370,14 +370,19 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/command"
-                className="btn btn-secondary btn-lg"
+                className="btn btn-lg"
                 style={{
-                  background: "rgba(255, 255, 255, 0.12)",
+                  background: "rgba(255, 255, 255, 0.16)",
                   color: "#FFFFFF",
-                  borderColor: "rgba(255, 255, 255, 0.28)",
-                  backdropFilter: "blur(10px)",
+                  border: "1.5px solid rgba(255, 255, 255, 0.35)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                   padding: "14px 28px",
                   fontSize: "15px",
+                  fontWeight: 700,
+                  boxShadow: "0 4px 24px rgba(0, 0, 0, 0.3)",
+                  letterSpacing: "-0.01em",
+                  transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 🚨 Command Center
