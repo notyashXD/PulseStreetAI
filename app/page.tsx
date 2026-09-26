@@ -15,7 +15,6 @@ import IncidentCard from "@/components/incidents/IncidentCard";
 import AQICard from "@/components/aqi/AQICard";
 import AQITrend from "@/components/aqi/AQITrend";
 import { useAuth } from "@/lib/auth/AuthContext";
-import ScrollVideoShowcase from "@/components/showcase/ScrollVideoShowcase";
 
 const LeafletMap = dynamic(() => import("@/components/map/LeafletMap"), { ssr: false });
 
@@ -165,37 +164,93 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Apple-style Scroll-Driven Video Showcase */}
-      <ScrollVideoShowcase />
+      {/* Cinematic Pune Skyline Hero Banner */}
+      <div style={{ padding: "24px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
+        <div
+          style={{
+            position: "relative",
+            minHeight: "540px",
+            borderRadius: "var(--radius-3xl)",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            padding: "clamp(28px, 4vw, 48px)",
+            boxShadow: "var(--shadow-xl)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            background: "#0D0B0A",
+          }}
+        >
+          {/* Background Pune Skyline Image */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('/images/showcase/scene1_skyline.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center 35%",
+              zIndex: 1,
+            }}
+          />
 
-      {/* Hero section & Civic Command Hub */}
-      <div id="civic-dashboard" style={{ padding: "72px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
-        <div className="animate-in" style={{
-          display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-          gap: "48px", flexWrap: "wrap", marginBottom: "40px",
-        }}>
-          <div style={{ flex: "1 1 560px", minWidth: "300px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "16px" }}>
-              <div style={{
-                display: "inline-flex", alignItems: "center", gap: "8px",
-                padding: "4px 12px", background: "var(--accent-bg)",
-                border: "1px solid var(--accent-border)", borderRadius: "var(--radius-full)",
-                fontSize: "11px", fontWeight: 700, color: "var(--accent)",
-              }}>
-                <span>🏛️ Pune Municipal Corporation (PMC)</span>
-                <span>·</span>
-                <span>Live Sensor Grid</span>
+          {/* Deep Dark Ambient Gradient Overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(135deg, rgba(13, 11, 10, 0.88) 0%, rgba(13, 11, 10, 0.62) 50%, rgba(13, 11, 10, 0.85) 100%)",
+              zIndex: 2,
+            }}
+          />
+
+          {/* Top Pill Row */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 3,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "12px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "6px 14px",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  backdropFilter: "blur(14px)",
+                  border: "1px solid rgba(255, 255, 255, 0.18)",
+                  borderRadius: "var(--radius-full)",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#FAF7F2",
+                }}
+              >
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 10px #22c55e" }} />
+                <span>Autonomous Civic Intelligence Architecture</span>
               </div>
 
-              <div style={{
-                display: "inline-flex", alignItems: "center", gap: "6px",
-                padding: "4px 12px",
-                background: isAdmin ? "rgba(140, 94, 60, 0.09)" : "rgba(85, 110, 70, 0.1)",
-                border: `1px solid ${isAdmin ? "var(--accent-border)" : "var(--pastel-sage-border)"}`,
-                borderRadius: "var(--radius-full)",
-                fontSize: "11px", fontWeight: 700,
-                color: isAdmin ? "var(--accent)" : "var(--pastel-sage)",
-              }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "6px 14px",
+                  background: "rgba(255, 255, 255, 0.08)",
+                  backdropFilter: "blur(14px)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  borderRadius: "var(--radius-full)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "#FAF7F2",
+                }}
+              >
                 <span>{currentUser.avatar}</span>
                 <span>{isAdmin ? `Admin: ${currentUser.name}` : `Citizen: ${currentUser.name}`}</span>
                 <button
@@ -209,13 +264,13 @@ export default function HomePage() {
                   style={{
                     background: "none",
                     border: "none",
-                    fontSize: "10.5px",
+                    fontSize: "11px",
                     fontWeight: 700,
                     textDecoration: "underline",
-                    color: "inherit",
+                    color: "#E09E6B",
                     cursor: "pointer",
                     padding: "0 2px",
-                    marginLeft: "2px",
+                    marginLeft: "4px",
                   }}
                   title="Switch between Admin and Citizen persona"
                 >
@@ -223,36 +278,169 @@ export default function HomePage() {
                 </button>
               </div>
             </div>
-            <h1 style={{
-              fontSize: "clamp(38px, 5.2vw, 58px)",
-              fontWeight: 800,
-              lineHeight: 1.08,
-              letterSpacing: "-0.035em",
-              marginBottom: "0",
-            }}>
-              Cleaner cities.{" "}
-              <br />
-              <span className="muted-heading">
-                Smarter response.{" "}
-                <br />
-                Better air quality.
-              </span>
-            </h1>
+
+            <button
+              type="button"
+              onClick={() => {
+                const target = document.getElementById("civic-dashboard");
+                target?.scrollIntoView({ behavior: "smooth" });
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 18px",
+                background: "rgba(255, 255, 255, 0.12)",
+                backdropFilter: "blur(14px)",
+                border: "1px solid rgba(255, 255, 255, 0.22)",
+                borderRadius: "var(--radius-full)",
+                color: "white",
+                fontSize: "12px",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+            >
+              <span>Explore Live Map</span>
+              <span>↓</span>
+            </button>
           </div>
-          <div style={{ flex: "0 1 380px", minWidth: "260px", paddingTop: "8px" }}>
-            <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: "24px" }}>
-              Real-time civic environmental intelligence for Indian cities. Fusing multimodal citizen voice & vision reports with live atmospheric IoT telemetry.
+
+          {/* Main Headline & CTA Content */}
+          <div style={{ position: "relative", zIndex: 3, maxWidth: "780px", margin: "44px 0" }}>
+            <div
+              style={{
+                display: "inline-block",
+                padding: "5px 12px",
+                background: "rgba(224, 158, 107, 0.18)",
+                border: "1px solid rgba(224, 158, 107, 0.35)",
+                borderRadius: "var(--radius-full)",
+                color: "#E09E6B",
+                fontSize: "11px",
+                fontWeight: 800,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                marginBottom: "16px",
+              }}
+            >
+              Urban Telemetry & Real-Time Remediation
+            </div>
+
+            <h1
+              style={{
+                fontSize: "clamp(34px, 5vw, 58px)",
+                fontWeight: 800,
+                color: "#FFFFFF",
+                letterSpacing: "-0.035em",
+                lineHeight: 1.08,
+                marginBottom: "18px",
+                textShadow: "0 4px 24px rgba(0, 0, 0, 0.6)",
+              }}
+            >
+              When cities pulse with <br />
+              <span style={{ color: "#E09E6B" }}>invisible atmospheric hazards.</span>
+            </h1>
+
+            <p
+              style={{
+                fontSize: "clamp(15px, 1.8vw, 17px)",
+                color: "rgba(255, 255, 255, 0.84)",
+                lineHeight: 1.6,
+                maxWidth: "600px",
+                marginBottom: "28px",
+                textShadow: "0 2px 12px rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              StreetPulse continuously digests open atmospheric sensor feeds across Pune, fusing multimodal citizen vision reports with live PM2.5 anomaly detection to route municipal crews in real time.
             </p>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <Link href="/report" className="btn btn-primary btn-lg">
+
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+              <Link
+                href="/report"
+                className="btn btn-primary btn-lg"
+                style={{
+                  background: "#8C5E3C",
+                  color: "#FAF7F2",
+                  boxShadow: "0 4px 20px rgba(140, 94, 60, 0.4)",
+                  padding: "14px 28px",
+                  fontSize: "15px",
+                }}
+              >
                 📸 Report an Issue
               </Link>
-              <Link href="/command" className="btn btn-secondary btn-lg">
+              <Link
+                href="/command"
+                className="btn btn-secondary btn-lg"
+                style={{
+                  background: "rgba(255, 255, 255, 0.12)",
+                  color: "#FFFFFF",
+                  borderColor: "rgba(255, 255, 255, 0.28)",
+                  backdropFilter: "blur(10px)",
+                  padding: "14px 28px",
+                  fontSize: "15px",
+                }}
+              >
                 🚨 Command Center
               </Link>
             </div>
           </div>
+
+          {/* Bottom Telemetry Ticker Strip */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 3,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "16px",
+              paddingTop: "20px",
+              borderTop: "1px solid rgba(255, 255, 255, 0.12)",
+            }}
+          >
+            <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Live Air Quality</div>
+                <div className="mono" style={{ fontSize: "17px", fontWeight: 800, color: "#E09E6B" }}>AQI {aqi?.aqi ?? 148} · {aqi?.category ?? "Moderate"}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Active Wards</div>
+                <div className="mono" style={{ fontSize: "17px", fontWeight: 800, color: "#FFFFFF" }}>42 Wards Monitored</div>
+              </div>
+              <div>
+                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Active Hotspots</div>
+                <div className="mono" style={{ fontSize: "17px", fontWeight: 800, color: "#22c55e" }}>{clusters.length} Verified Clusters</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                const target = document.getElementById("civic-dashboard");
+                target?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="mono"
+              style={{
+                fontSize: "12px",
+                color: "rgba(255, 255, 255, 0.75)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span>Scroll down for Live Map & Simulator</span>
+              <span>↓</span>
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Civic Command Hub & Simulator */}
+      <div id="civic-dashboard" style={{ padding: "40px clamp(20px, 3vw, 48px) 0", maxWidth: "var(--container-width)", width: "100%", margin: "0 auto" }}>
 
         {/* Live Simulator Toolbar Strip */}
         <div style={{
